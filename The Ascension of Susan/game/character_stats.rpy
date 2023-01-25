@@ -859,7 +859,7 @@ init python:
             if os.path.isdir('game'):
                 path = "game/images/Girls/" + self.pic_directory
             else:
-                path = "../Project/The Ascension of Susan/game/images/Girls/" + self.pic_directory
+                path = "../GameProject/The Ascension of Susan/game/images/Girls/" + self.pic_directory
             pic_list = os.listdir(path)
             result_list = []
             for title in titles:
