@@ -5,24 +5,21 @@ init python:
     from os.path import isfile, join
     import random
 
-    def upcost(value):
-        if value < 20:
-            cost = 10
-        elif value < 40:
-            cost = 20
-        elif value < 60:
-            cost = 40
-        elif value < 80:
-            cost = 70
-        elif value < 100:
-            cost = 100
-        elif value < 120:
-            cost = 150
-        elif value < 140:
-            cost = 200
-        else:
-            cost = 250
-        return cost
+    g_dict_upcost = {
+        140: 250,
+        120: 200,
+        100: 150,
+        80: 100,
+        60: 70,
+        40: 40,
+        20: 20,
+        0: 10
+    }
+
+    def upcost(p_value):
+        for dict_value, dict_upcost in g_dict_upcost.items():
+            if p_value > dict_value:
+                return dict_upcost
 
     stat_ru_name = {
         "Sex": "Секс",
