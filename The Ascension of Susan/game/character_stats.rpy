@@ -481,7 +481,6 @@ init python:
             result += '{/size}'
             return result
 
-
     all_traits = [
                 Trait("Нимфоманка",           "", {"Sex": ("exp_rate", 30)},                                   "positive"),
                 Trait("Грамотные тренировки", "", {"Combat": ("exp_rate", 30)},                                "positive"),
@@ -695,7 +694,9 @@ init python:
     class Personage(store.object):
         def __init__(self, name='default', pic_directory = 'default', traits = [],
         base_sex=0, base_combat=0, base_job=0, base_charm=0, base_grace=0, base_strength=0, base_erudition=0,
-        sec_service=0, sec_classic=0, sec_anal=0, sec_fetish=0, sec_deception=0, sec_finesse=0, sec_power=0, sec_magic=0, sec_waitress=0, sec_dancer=0, sec_masseuse=0, sec_geisha=0,
+        sec_service=0, sec_classic=0, sec_anal=0, sec_fetish=0, 
+        sec_deception=0, sec_finesse=0, sec_power=0, sec_magic=0, 
+        sec_waitress=0, sec_dancer=0, sec_masseuse=0, sec_geisha=0,
         base_sex_exp=0, base_combat_exp=0, base_job_exp=0, base_charm_exp=0, base_grace_exp=0, base_strength_exp=0, base_erudition_exp=0
         ):
             self.name = name
@@ -884,10 +885,6 @@ init python:
         def make_profile_image(self):
             for character in self.list:
                 character.make_profile_image()
-
-    class Sexual_Interaction (store.object):
-        def __init__(self):
-            pass
 
 screen personage_screen:
     frame:
