@@ -5,6 +5,33 @@ init python:
     from os.path import isfile, join
     import random
 
+    class Dice(store.object):
+        def __init__(self, value: int):
+            self.roll = random.randint(1, value)
+            self.critical_mod = 1
+            if self.roll == value: # Критический успех
+                if value == 6:
+                    self.critical_mod = 1.25
+                elif value == 8:
+                    self.critical_mod = 1.5
+                elif value == 10:
+                    self.critical_mod = 2
+                elif value == 12:
+                    self.critical_mod = 2.25
+                elif value == 20:
+                    self.critical_mod = 3
+            if self.roll == 1: # Критический провал
+                if value == 6:
+                    self.critical_mod = 0.7
+                elif value == 8:
+                    self.critical_mod = 0.4
+                elif value == 10:
+                    self.critical_mod = 0.25
+                elif value == 12:
+                    self.critical_mod = 0.2
+                elif value == 20:
+                    self.critical_mod = 0.1
+
     g_dict_upcost = {
         140: 250,
         120: 200,
@@ -18,7 +45,7 @@ init python:
 
     def upcost(p_value):
         for dict_value, dict_upcost in g_dict_upcost.items():
-            if p_value > dict_value:
+            if p_value >= dict_value:
                 return dict_upcost
 
     stat_ru_name = {
@@ -805,7 +832,7 @@ init python:
             else:
                 return False
 
-        def is_stat_upgradable(self, stat): #Можно ли улучшить конкретную характеристику
+        def is_stat_upgradable(self, stat: Stat): #Можно ли улучшить конкретную характеристику
             main_stat_higher_flag = True #Выше ли доп статы основная?
             if stat.parent_2_name is None:
                 cur_exp = stat.exp
