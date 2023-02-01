@@ -10,6 +10,7 @@ init python:
             self.roll = random.randint(1, value)
             self.critical_mod = 1
             self.critical = None
+            
             if self.roll == value: # Критический успех
                 self.critical = True
                 if value == 6:
@@ -480,7 +481,7 @@ init python:
             trait_list = []
             for counter in range(0, quantity):
                 picked_trait = random.randint(0,len(traits_not_in_list)-1)
-                print('picked_trait: '+str(picked_trait)+'; len(traits_not_in_list): '+str(len(traits_not_in_list))) #logging
+                #print('picked_trait: '+str(picked_trait)+'; len(traits_not_in_list): '+str(len(traits_not_in_list))) #logging
                 picked_orientation = random.randint(0,1)
                 trait_list += [traits_not_in_list[picked_trait][picked_orientation]]
                 traits_not_in_list.remove(traits_not_in_list[picked_trait])
@@ -726,18 +727,26 @@ init python:
             return self.value//20 # Пока нет перков прокачки стат
 
     class Personage(store.object):
-        def __init__(self, name='default', pic_directory = 'default', traits = [],
-        base_sex=0, base_combat=0, base_job=0, base_charm=0, base_grace=0, base_strength=0, base_erudition=0,
-        sec_service=0, sec_classic=0, sec_anal=0, sec_fetish=0, 
-        sec_deception=0, sec_finesse=0, sec_power=0, sec_magic=0, 
-        sec_waitress=0, sec_dancer=0, sec_masseuse=0, sec_geisha=0,
-        base_sex_exp=0, base_combat_exp=0, base_job_exp=0, base_charm_exp=0, base_grace_exp=0, base_strength_exp=0, base_erudition_exp=0
+        def __init__(self, name='default', pic_directory = 'default', traits=[],
+        base_sex=0,          base_combat=0,     base_job=0,      base_charm=0,         base_grace=0,         base_strength=0,         base_erudition=0,
+        sec_service=0,       sec_classic=0,     sec_anal=0,      sec_fetish=0, 
+        sec_deception=0,     sec_finesse=0,     sec_power=0,     sec_magic=0, 
+        sec_waitress=0,      sec_dancer=0,      sec_masseuse=0,  sec_geisha=0,
+        base_sex_exp=0,      base_combat_exp=0, base_job_exp=0,  base_charm_exp=0,     base_grace_exp=0,     base_strength_exp=0,     base_erudition_exp=0
         ):
             self.name = name
             self.pic_directory = pic_directory
             self.profile_image = self.picture('profile')
+            self.init_stats(base_sex, base_combat, base_job, base_charm, base_grace, base_strength, base_erudition, sec_service, sec_classic, sec_anal, sec_fetish, sec_deception, sec_finesse, sec_power, sec_magic, sec_waitress, sec_dancer, sec_masseuse, sec_geisha, base_sex_exp, base_combat_exp, base_job_exp, base_charm_exp, base_grace_exp, base_strength_exp, base_erudition_exp)
+            self.init_traits(traits)
 
-            # Характеристики
+        # Блок инициализации
+        def init_stats(self, 
+        base_sex,        base_combat,      base_job,      base_charm,      base_grace,      base_strength,      base_erudition,
+        sec_service,     sec_classic,      sec_anal,      sec_fetish, 
+        sec_deception,   sec_finesse,      sec_power,     sec_magic, 
+        sec_waitress,    sec_dancer,       sec_masseuse,  sec_geisha,
+        base_sex_exp,    base_combat_exp,  base_job_exp,  base_charm_exp,  base_grace_exp,  base_strength_exp,  base_erudition_exp):
             self.stat = {
                 "Sex"       : Stat(name="Секс",        eng_name="Sex"       ,value=base_sex,       max_value=100, modifier=None, exp=base_sex_exp,      exp_rate=1,    parent_1_name="Sex",       parent_2_name=None,     bar_texture="dynamic", icon=""),
                 "Combat"    : Stat(name="Бой",         eng_name="Combat"    ,value=base_combat,    max_value=100, modifier=None, exp=base_combat_exp,   exp_rate=1,    parent_1_name="Combat",    parent_2_name=None,     bar_texture="dynamic", icon=""),
@@ -760,6 +769,7 @@ init python:
                 "Geisha"    : Stat(name="Гейша",       eng_name="Geisha"    ,value=sec_geisha,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Erudition", parent_2_name="Job",    bar_texture="dynamic", icon="geisha")
             }
 
+        def init_traits(self, traits):
             # Заполнение черт
             positive_traits_count = 0
             negative_traits_count = 0

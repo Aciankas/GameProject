@@ -18,15 +18,11 @@ init python:
         def __init__(self, level=random.randint(g_client_min_level ,g_client_max_level), prefered_act='Random', bonus_act='Random'):
             self.level = level
             self.money = round(g_client_money_mod*level*random.uniform(0.85, 1.15))
-            if prefered_act == 'Random':
-                self.prefered_act = random_prostitution_act()
-            else:
-                self.prefered_act = prefered_act
-            if bonus_act == 'Random':
-                self.bonus_act = random_bonus_prostitution_act()
-            else:
-                self.bonus_act = bonus_act
-
+            if prefered_act == 'Random':   self.prefered_act = random_prostitution_act()
+            else:                          self.prefered_act = prefered_act
+            if bonus_act == 'Random':   self.bonus_act = random_bonus_prostitution_act()
+            else:                       self.bonus_act = bonus_act
+            
     class Prostitution_Action (store.object):
         def __init__(self, girl: Personage, client: Prostitution_Client):
             self.dice = Dice(10)
