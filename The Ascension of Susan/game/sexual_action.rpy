@@ -32,14 +32,10 @@ init python:
             self.dice = Dice(10)
             # доп предпочтения
             if client.bonus_act is not None:
-                if girl.stat[client.bonus_act].act_level() >= client.level - 1:
-                    self.bonus_act_mod = 4
-                elif girl.stat[client.bonus_act].act_level() == client.level - 1:
-                    self.bonus_act_mod = 2
-                else:
-                    self.bonus_act_mod = -1
-            else:
-                self.bonus_act_mod = 0
+                if girl.stat[client.bonus_act].act_level() >= client.level - 1:     self.bonus_act_mod = 4
+                elif girl.stat[client.bonus_act].act_level() == client.level - 1:   self.bonus_act_mod = 2
+                else:                                                               self.bonus_act_mod = -1
+            else:                                                                   self.bonus_act_mod = 0
             self.modifiers = girl.stat[client.prefered_act].modifier + ((girl.stat[client.prefered_act].value - client.level*20)/2 + (girl.stat[girl.stat[client.prefered_act].parent_2_name].value - client.level*20)/2)/20
             self.final_result = min(g_prostitution_difficulty_modifier + girl.stat[client.prefered_act].act_level() - client.level + self.dice.roll, 10) + self.bonus_act_mod + self.modifiers
             self.profit = round(self.final_result/10 * client.money * self.dice.critical_mod)
