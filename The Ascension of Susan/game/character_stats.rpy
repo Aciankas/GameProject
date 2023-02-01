@@ -23,7 +23,7 @@ init python:
                 elif value == 20:
                     self.critical_mod = 3
             if self.roll == 1: # Критический провал
-            self.critical = False
+                self.critical = False
                 if value == 6:
                     self.critical_mod = 0.7
                 elif value == 8:
