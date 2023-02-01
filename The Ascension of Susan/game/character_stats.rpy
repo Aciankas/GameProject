@@ -9,7 +9,9 @@ init python:
         def __init__(self, value: int):
             self.roll = random.randint(1, value)
             self.critical_mod = 1
+            self.critical = None
             if self.roll == value: # Критический успех
+                self.critical = True
                 if value == 6:
                     self.critical_mod = 1.25
                 elif value == 8:
@@ -21,6 +23,7 @@ init python:
                 elif value == 20:
                     self.critical_mod = 3
             if self.roll == 1: # Критический провал
+            self.critical = False
                 if value == 6:
                     self.critical_mod = 0.7
                 elif value == 8:
@@ -717,6 +720,10 @@ init python:
             else:
                 cur_stat_icon = "images/icons/stats/" + icon + ".png"
             return Transform(cur_stat_icon, fit='contain', xysize = (x,y))
+
+        # уровень акта (владение характеристикой через таланты)
+        def act_level(self):
+            return self.value//20 # Пока нет перков прокачки стат
 
     class Personage(store.object):
         def __init__(self, name='default', pic_directory = 'default', traits = [],
