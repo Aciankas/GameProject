@@ -53,47 +53,47 @@ init python:
                 return dict_upcost
 
     stat_ru_name = {
-        "Sex": "Секс",
-        "Combat": "Бой",
-        "Job": "Услуги",
-        "Charm": "Очарование",
-        "Grace": "Грация",
-        "Strength": "Сила",
-        "Erudition": "Эрудиция",
-        "Service": "Ласки",
-        "Classic": "Классика",
-        "Anal": "Анал",
-        "Fetish": "Фетиш",
-        "Deception": "Уловки",
-        "Finesse": "Искусность",
-        "Power": "Мощь",
-        "Magic": "Магия",
-        "Waitress": "Официантка",
-        "Dancer": "Танцовщица",
-        "Masseuse": "Массажистка",
-        "Geisha": "Гейша"
+        "sex": "секс",
+        "combat": "бой",
+        "job": "услуги",
+        "charm": "очарование",
+        "grace": "грация",
+        "strength": "сила",
+        "erudition": "эрудиция",
+        "service": "ласки",
+        "classic": "классика",
+        "anal": "анал",
+        "fetish": "фетиш",
+        "deception": "уловки",
+        "finesse": "искусность",
+        "power": "мощь",
+        "magic": "магия",
+        "waitress": "официантка",
+        "dancer": "танцовщица",
+        "masseuse": "массажистка",
+        "geisha": "гейша"
     }
 
     stat_system_name = {
-        "Секс": "Sex",
-        "Бой": "Combat",
-        "Услуги": "Job",
-        "Очарование": "Charm",
-        "Грация": "Grace",
-        "Сила": "Strength",
-        "Эрудиция": "Erudition",
-        "Ласки": "Service",
-        "Классика": "Classic",
-        "Анал": "Anal",
-        "Фетиш": "Fetish",
-        "Уловки": "Deception",
-        "Искусность": "Finesse",
-        "Мощь": "Power",
-        "Магия": "Magic",
-        "Официантка": "Waitress",
-        "Танцовщица": "Dancer",
-        "Массажистка": "Masseuse",
-        "Гейша": "Geisha"
+        "секс": "sex",
+        "бой": "combat",
+        "услуги": "job",
+        "очарование": "charm",
+        "грация": "grace",
+        "сила": "strength",
+        "эрудиция": "erudition",
+        "ласки": "service",
+        "классика": "classic",
+        "анал": "anal",
+        "фетиш": "fetish",
+        "уловки": "deception",
+        "искусность": "finesse",
+        "мощь": "power",
+        "магия": "magic",
+        "официантка": "waitress",
+        "танцовщица": "dancer",
+        "массажистка": "masseuse",
+        "гейша": "geisha"
     }
 
     colour = {
@@ -179,44 +179,23 @@ init python:
         def can_do(self, option):
             #Может ли персонаж выполнить какое либо действие
             option = option.lower()
-            if option in ('service', 'ласки'):
-                if self.naughtiness >= 20:
-                    return True
-                else:
-                    return False
-            elif option in ('sex', 'classic', 'секс', 'классика'):
-                if self.naughtiness >= 40:
-                    return True
-                else:
-                    return False
-            elif option in ('anal', 'анал'):
-                if self.naughtiness >= 60:
-                    return True
-                else:
-                    return False
-            elif option in ('fetish', 'bdsm', 'фетиш', 'бдсм'):
-                if self.naughtiness >= 80:
-                    return True
-                else:
-                    return False
-            else:
-                return False
+            return ((option in ('service', 'ласки') and self.naughtiness >= 20) 
+                or (option in ('sex', 'classic', 'секс', 'классика') and self.naughtiness >= 40) 
+                or (option in ('anal', 'анал') and self.naughtiness >= 60) 
+                or (option in ('fetish', 'bdsm', 'фетиш', 'бдсм') and self.naughtiness >= 80))
 
-        def event(self, event, value=1, param='all'):
+        def event(self, *events, value=1, param='all'):
             #param: изменяемый параметр личности
             #value: коэффициент изменения
-            #event: событие/модификаторы характера воздействия
-            subevents       = event.split()
+            #events: событие/модификаторы характера воздействия
             multiplier_mod  = 1
             loyalty_mod     = 0
             discipline_mod  = 0
             mood_mod        = 0
             naughtiness_mod = 0
-            print(subevents)
-            for subevent in subevents:
-                subevent = subevent.lower()
+            for subevent in events:
+                subevent = subevent.lower() if type(subevent) is str else ''
                 if subevent in ('battle', 'бой'): #Миролюбие-Кровожадность
-                    print(' check')
                     if self.has_trait('Кровожадность'):
                         mood_mod += 0.5
                         if self.affection_flag == 'discipline':
@@ -226,7 +205,6 @@ init python:
                         if self.affection_flag == 'loyalty':
                             loyalty_mod += -0.5
                 elif subevent in ('peace', 'мир'): #Миролюбие-Кровожадность
-                    print(' check')
                     if self.has_trait('Кровожадность'):
                         mood_mod += -0.5
                         if self.affection_flag == 'discipline':
@@ -235,8 +213,7 @@ init python:
                         mood_mod += 0.5
                         if self.affection_flag == 'loyalty':
                             loyalty_mod += 0.5
-                elif subevent in ('punishment', 'punish', 'discipline', 'наказание', 'муштра'): #Дисциплина-Свобода
-                    print(' check')
+                elif subevent in ('punishment', 'punish', 'discipline', 'order', 'command', 'наказание', 'муштра', 'приказ'): #Дисциплина-Свобода
                     if self.has_trait('Дисциплина'):
                         mood_mod       += 1
                         discipline_mod += 0.5
@@ -273,8 +250,7 @@ init python:
                             mood_mod += 0
                         else:
                             mood_mod += 0
-                elif subevent in ('reward', 'поощрение', 'награда', 'похвала'): #Дисциплина-Свобода
-                    print(' check')
+                elif subevent in ('reward', 'freedom', 'поощрение', 'награда', 'похвала', 'свобода'): #Дисциплина-Свобода
                     if self.has_trait('Дисциплина'):
                         mood_mod       += -1
                         discipline_mod += -0.5
@@ -312,15 +288,13 @@ init python:
                             mood_mod    += 1.5
                             loyalty_mod += 0.5
                 elif subevent in ('public', 'публичное', 'публичная', 'публичный'): #Интроверсия-Экстраверсия
-                    print(' check')
                     if self.has_trait('Интроверсия'):
                         mood_mod       +=-0.25
                         multiplier_mod +=-0.25
                     elif self.has_trait('Экстраверсия'):
                         mood_mod       += 0.25
                         multiplier_mod += 0.25
-                elif subevent in ('personal', 'личное', 'личная', 'личный'): #Интроверсия-Экстраверсия
-                    print('личный check')
+                elif subevent in ('personal', 'private', 'личное', 'личная', 'личный'): #Интроверсия-Экстраверсия
                     if self.has_trait('Интроверсия'):
                         mood_mod       += 0.25
                         multiplier_mod += 0.25
@@ -328,7 +302,6 @@ init python:
                         mood_mod       +=-0.25
                         multiplier_mod +=-0.25
                 elif subevent in ('lust', 'sex', 'секс', 'похоть'): #Раскованность-Скромность
-                    print(' check')
                     if self.has_trait('Раскованность'):
                         mood_mod += 0.5
                         if self.naughtiness >= 80:
@@ -371,7 +344,6 @@ init python:
                         else:
                             naughtiness_mod += 1.5
                 elif subevent in ('shy', 'modest', 'modesty', 'скромность', 'забота', 'любовь'): #Раскованность-Скромность
-                    print(' check')
                     if self.has_trait('Раскованность'):
                         mood_mod += -0.5
                         if self.naughtiness >= 80:
@@ -414,7 +386,6 @@ init python:
                         else:
                             naughtiness_mod += 0
                 elif subevent in ('asceticism', 'аскетизм', 'духовность'): #Аскетизм-Гедонизм
-                    print(' check')
                     if self.has_trait('Аскетизм'):
                         mood_mod       += 0.25
                         multiplier_mod += 0.25
@@ -422,7 +393,6 @@ init python:
                         mood_mod       +=-0.25
                         multiplier_mod +=-0.25
                 elif subevent in ('hedonism', 'гедонизм', 'жадность', 'меркантильность'): #Аскетизм-Гедонизм
-                    print(' check')
                     if self.has_trait('Аскетизм'):
                         multiplier_mod +=-0.25
                         mood_mod       +=-0.25
@@ -430,7 +400,6 @@ init python:
                         multiplier_mod += 0.25
                         mood_mod       += 0.25
                 elif subevent in ('selfishness', 'selfish', 'эгоистичность', 'эгоистичный', 'эгоизм'): #Эгоистичность-Альтруистичность
-                    print(' check')
                     if self.has_trait('Эгоистичность'):
                         multiplier_mod += 0.25
                         mood_mod       += 0.25
@@ -438,7 +407,6 @@ init python:
                         multiplier_mod +=-0.25
                         mood_mod       +=-0.25
                 elif subevent in ('altruism', 'altruistic', 'альтруистичность', 'альтруистичный', 'альтруизм'): #Эгоистичность-Альтруистичность
-                    print(' check')
                     if self.has_trait('Эгоистичность'):
                         multiplier_mod +=-0.25
                         mood_mod       +=-0.25
@@ -487,6 +455,18 @@ init python:
                 traits_not_in_list.remove(traits_not_in_list[picked_trait])
             return trait_list
 
+        def show(self):
+            print(f"""
+            Personality stats:
+                traits: {self.traits}
+                affection: {self.affection}
+                affection flag: {self.affection_flag}
+                    loyalty: {self.loyalty}
+                    discipline: {self.discipline}
+                mood: {self.mood}
+                naughtiness: {self.naughtiness}
+            """)
+
     class Trait(store.object):
         def __init__(self, name, eng_name, effects, orientation='positive'):
             self.name = name
@@ -513,126 +493,126 @@ init python:
             return result
 
     all_traits = [
-                Trait("Нимфоманка",           "", {"Sex": ("exp_rate", 30)},                                   "positive"),
-                Trait("Грамотные тренировки", "", {"Combat": ("exp_rate", 30)},                                "positive"),
-                Trait("Гениальная служанка",  "", {"Job": ("exp_rate", 30)},                                   "positive"),
-                Trait("Чуткая",               "", {"Charm": ("exp_rate", 35)},                                 "positive"),
-                Trait("Природная гибкость",   "", {"Grace": ("exp_rate", 35)},                                 "positive"),
-                Trait("Растущая мощь",        "", {"Strength": ("exp_rate", 35)},                              "positive"),
-                Trait("Осознанная",           "", {"Erudition": ("exp_rate", 35)},                             "positive"),
-                Trait("Чувствительная грудь", "", {"Charm": ("exp_rate", 18), "Sex": ("exp_rate", 18)},        "positive"),
-                Trait("Карманница",           "", {"Charm": ("exp_rate", 18), "Combat": ("exp_rate", 18)},     "positive"),
-                Trait("Быстрое обслуживание", "", {"Charm": ("exp_rate", 18), "Job": ("exp_rate", 18)},        "positive"),
-                Trait("Податливая",           "", {"Grace": ("exp_rate", 18), "Sex": ("exp_rate", 18)},        "positive"),
-                Trait("Уроки охоты",          "", {"Grace": ("exp_rate", 18), "Combat": ("exp_rate", 18)},     "positive"),
-                Trait("Чувство ритма",        "", {"Grace": ("exp_rate", 18), "Job": ("exp_rate", 18)},        "positive"),
-                Trait("Пышные формы",         "", {"Strength": ("exp_rate", 18), "Sex": ("exp_rate", 18)},     "positive"),
-                Trait("Развитые мышцы",       "", {"Strength": ("exp_rate", 18), "Combat": ("exp_rate", 18)},  "positive"),
-                Trait("Знание анатомии",      "", {"Strength": ("exp_rate", 18), "Job": ("exp_rate", 18)},     "positive"),
-                Trait("Любительница нового",  "", {"Erudition": ("exp_rate", 18), "Sex": ("exp_rate", 18)},    "positive"),
-                Trait("Тайны магии",          "", {"Erudition": ("exp_rate", 18), "Combat": ("exp_rate", 18)}, "positive"),
-                Trait("Умелый собеседник",    "", {"Erudition": ("exp_rate", 18), "Job": ("exp_rate", 18)},    "positive"),
+                Trait("Нимфоманка",           "", {"sex": ("exp_rate", 30)},                                   "positive"),
+                Trait("Грамотные тренировки", "", {"combat": ("exp_rate", 30)},                                "positive"),
+                Trait("Гениальная служанка",  "", {"job": ("exp_rate", 30)},                                   "positive"),
+                Trait("Чуткая",               "", {"charm": ("exp_rate", 35)},                                 "positive"),
+                Trait("Природная гибкость",   "", {"grace": ("exp_rate", 35)},                                 "positive"),
+                Trait("Растущая мощь",        "", {"strength": ("exp_rate", 35)},                              "positive"),
+                Trait("Осознанная",           "", {"erudition": ("exp_rate", 35)},                             "positive"),
+                Trait("Чувствительная грудь", "", {"charm": ("exp_rate", 18), "sex": ("exp_rate", 18)},        "positive"),
+                Trait("Карманница",           "", {"charm": ("exp_rate", 18), "combat": ("exp_rate", 18)},     "positive"),
+                Trait("Быстрое обслуживание", "", {"charm": ("exp_rate", 18), "job": ("exp_rate", 18)},        "positive"),
+                Trait("Податливая",           "", {"grace": ("exp_rate", 18), "sex": ("exp_rate", 18)},        "positive"),
+                Trait("Уроки охоты",          "", {"grace": ("exp_rate", 18), "combat": ("exp_rate", 18)},     "positive"),
+                Trait("Чувство ритма",        "", {"grace": ("exp_rate", 18), "job": ("exp_rate", 18)},        "positive"),
+                Trait("Пышные формы",         "", {"strength": ("exp_rate", 18), "sex": ("exp_rate", 18)},     "positive"),
+                Trait("Развитые мышцы",       "", {"strength": ("exp_rate", 18), "combat": ("exp_rate", 18)},  "positive"),
+                Trait("Знание анатомии",      "", {"strength": ("exp_rate", 18), "job": ("exp_rate", 18)},     "positive"),
+                Trait("Любительница нового",  "", {"erudition": ("exp_rate", 18), "sex": ("exp_rate", 18)},    "positive"),
+                Trait("Тайны магии",          "", {"erudition": ("exp_rate", 18), "combat": ("exp_rate", 18)}, "positive"),
+                Trait("Умелый собеседник",    "", {"erudition": ("exp_rate", 18), "job": ("exp_rate", 18)},    "positive"),
 
-                Trait("Ночь напролёт",       "", {"Sex": ("max_value", 20), "Service": ("max_value", 20), "Classic": ("max_value", 20), "Anal": ("max_value", 20), "Fetish": ("max_value", 20)},      "positive"),
-                Trait("Боевой раж",          "", {"Combat": ("max_value", 20), "Deception": ("max_value", 20), "Finesse": ("max_value", 20), "Power": ("max_value", 20), "Magic": ("max_value", 20)}, "positive"),
-                Trait("Семейное дело",       "", {"Job": ("max_value", 20), "Waitress": ("max_value", 20), "Dancer": ("max_value", 20), "Masseuse": ("max_value", 20), "Geisha": ("max_value", 20)},  "positive"),
-                Trait("Живая мимика",        "", {"Charm": ("max_value", 30), "Service": ("max_value", 30), "Deception": ("max_value", 30), "Waitress": ("max_value", 30)},                           "positive"),
-                Trait("Идеальная фигура",    "", {"Grace": ("max_value", 30), "Classic": ("max_value", 30), "Finesse": ("max_value", 30), "Dancer": ("max_value", 30)},                               "positive"),
-                Trait("Природная мощь",      "", {"Strength": ("max_value", 30), "Anal": ("max_value", 30), "Power": ("max_value", 30), "Masseuse": ("max_value", 30)},                               "positive"),
-                Trait("Пытливый ум",         "", {"Erudition": ("max_value", 30), "Fetish": ("max_value", 30), "Magic": ("max_value", 30), "Geisha": ("max_value", 30)},                              "positive"),
-                Trait("Глубокий поцелуй",    "", {"Service": ("max_value", 70)},   "positive"),
-                Trait("Невидимка",           "", {"Deception": ("max_value", 70)}, "positive"),
-                Trait("Марафонец",           "", {"Waitress": ("max_value", 70)},  "positive"),
-                Trait("Возбуждающие изгибы", "", {"Classic": ("max_value", 70)},   "positive"),
-                Trait("Зоркий глаз",         "", {"Finesse": ("max_value", 70)},   "positive"),
-                Trait("Танцевальный азарт",  "", {"Dancer": ("max_value", 70)},    "positive"),
-                Trait("Крепкий орешек",      "", {"Anal": ("max_value", 70)},      "positive"),
-                Trait("Безграничная сила",   "", {"Power": ("max_value", 70)},     "positive"),
-                Trait("Сильные руки",        "", {"Masseuse": ("max_value", 70)},  "positive"),
-                Trait("Богатая фантазия",    "", {"Fetish": ("max_value", 70)},    "positive"),
-                Trait("Духовная стойкость",  "", {"Magic": ("max_value", 70)},     "positive"),
-                Trait("Эрудиция",            "", {"Geisha": ("max_value", 70)},    "positive"),
+                Trait("Ночь напролёт",       "", {"sex": ("max_value", 20), "service": ("max_value", 20), "classic": ("max_value", 20), "anal": ("max_value", 20), "fetish": ("max_value", 20)},      "positive"),
+                Trait("Боевой раж",          "", {"combat": ("max_value", 20), "deception": ("max_value", 20), "finesse": ("max_value", 20), "power": ("max_value", 20), "magic": ("max_value", 20)}, "positive"),
+                Trait("Семейное дело",       "", {"job": ("max_value", 20), "waitress": ("max_value", 20), "dancer": ("max_value", 20), "masseuse": ("max_value", 20), "geisha": ("max_value", 20)},  "positive"),
+                Trait("Живая мимика",        "", {"charm": ("max_value", 30), "service": ("max_value", 30), "deception": ("max_value", 30), "waitress": ("max_value", 30)},                           "positive"),
+                Trait("Идеальная фигура",    "", {"grace": ("max_value", 30), "classic": ("max_value", 30), "finesse": ("max_value", 30), "dancer": ("max_value", 30)},                               "positive"),
+                Trait("Природная мощь",      "", {"strength": ("max_value", 30), "anal": ("max_value", 30), "power": ("max_value", 30), "masseuse": ("max_value", 30)},                               "positive"),
+                Trait("Пытливый ум",         "", {"erudition": ("max_value", 30), "fetish": ("max_value", 30), "magic": ("max_value", 30), "geisha": ("max_value", 30)},                              "positive"),
+                Trait("Глубокий поцелуй",    "", {"service": ("max_value", 70)},   "positive"),
+                Trait("Невидимка",           "", {"deception": ("max_value", 70)}, "positive"),
+                Trait("Марафонец",           "", {"waitress": ("max_value", 70)},  "positive"),
+                Trait("Возбуждающие изгибы", "", {"classic": ("max_value", 70)},   "positive"),
+                Trait("Зоркий глаз",         "", {"finesse": ("max_value", 70)},   "positive"),
+                Trait("Танцевальный азарт",  "", {"dancer": ("max_value", 70)},    "positive"),
+                Trait("Крепкий орешек",      "", {"anal": ("max_value", 70)},      "positive"),
+                Trait("Безграничная сила",   "", {"power": ("max_value", 70)},     "positive"),
+                Trait("Сильные руки",        "", {"masseuse": ("max_value", 70)},  "positive"),
+                Trait("Богатая фантазия",    "", {"fetish": ("max_value", 70)},    "positive"),
+                Trait("Духовная стойкость",  "", {"magic": ("max_value", 70)},     "positive"),
+                Trait("эрудиция",            "", {"geisha": ("max_value", 70)},    "positive"),
 
-                Trait("Развратница",          "", {"Service": ("modifier", 1), "Classic": ("modifier", 1), "Anal": ("modifier", 1), "Fetish": ("modifier", 1)},     "positive"),
-                Trait("Прирождённый боец",    "", {"Deception": ("modifier", 1), "Finesse": ("modifier", 1), "Power": ("modifier", 1), "Magic": ("modifier", 1)},   "positive"),
-                Trait("Лояльная",             "", {"Waitress": ("modifier", 1), "Dancer": ("modifier", 1), "Masseuse": ("modifier", 1), "Geisha": ("modifier", 1)}, "positive"),
-                Trait("Обольстительница",     "", {"Service": ("modifier", 2), "Deception": ("modifier", 2), "Waitress": ("modifier", 2)},                          "positive"),
-                Trait("Изящество",            "", {"Classic": ("modifier", 2), "Finesse": ("modifier", 2), "Dancer": ("modifier", 2)},                              "positive"),
-                Trait("Подавляющая",          "", {"Anal": ("modifier", 2), "Power": ("modifier", 2), "Masseuse": ("modifier", 2)},                                 "positive"),
-                Trait("Гуру",                 "", {"Fetish": ("modifier", 2), "Magic": ("modifier", 2), "Geisha": ("modifier", 2)},                                 "positive"),
-                Trait("Мягкие губы",          "", {"Service": ("modifier", 3)},   "positive"),
-                Trait("Амбидекстр",           "", {"Deception": ("modifier", 3)}, "positive"),
-                Trait("Боковое зрение",       "", {"Waitress": ("modifier", 3)},  "positive"),
-                Trait("Влажные губы",         "", {"Classic": ("modifier", 3)},   "positive"),
-                Trait("Следопыт",             "", {"Finesse": ("modifier", 3)},   "positive"),
-                Trait("Кураж",                "", {"Dancer": ("modifier", 3)},    "positive"),
-                Trait("Притягательные бёдра", "", {"Anal": ("modifier", 3)},      "positive"),
-                Trait("Берсерк",              "", {"Power": ("modifier", 3)},     "positive"),
-                Trait("Расслабляющие обряды", "", {"Masseuse": ("modifier", 3)},  "positive"),
-                Trait("Раскрепощенная",       "", {"Fetish": ("modifier", 3)},    "positive"),
-                Trait("Гибкая энергия",       "", {"Magic": ("modifier", 3)},     "positive"),
-                Trait("Мечтательница",        "", {"Geisha": ("modifier", 3)},    "positive"),
+                Trait("Развратница",          "", {"service": ("modifier", 1), "classic": ("modifier", 1), "anal": ("modifier", 1), "fetish": ("modifier", 1)},     "positive"),
+                Trait("Прирождённый боец",    "", {"deception": ("modifier", 1), "finesse": ("modifier", 1), "power": ("modifier", 1), "magic": ("modifier", 1)},   "positive"),
+                Trait("Лояльная",             "", {"waitress": ("modifier", 1), "dancer": ("modifier", 1), "masseuse": ("modifier", 1), "geisha": ("modifier", 1)}, "positive"),
+                Trait("Обольстительница",     "", {"service": ("modifier", 2), "deception": ("modifier", 2), "waitress": ("modifier", 2)},                          "positive"),
+                Trait("Изящество",            "", {"classic": ("modifier", 2), "finesse": ("modifier", 2), "dancer": ("modifier", 2)},                              "positive"),
+                Trait("Подавляющая",          "", {"anal": ("modifier", 2), "power": ("modifier", 2), "masseuse": ("modifier", 2)},                                 "positive"),
+                Trait("Гуру",                 "", {"fetish": ("modifier", 2), "magic": ("modifier", 2), "geisha": ("modifier", 2)},                                 "positive"),
+                Trait("Мягкие губы",          "", {"service": ("modifier", 3)},   "positive"),
+                Trait("Амбидекстр",           "", {"deception": ("modifier", 3)}, "positive"),
+                Trait("Боковое зрение",       "", {"waitress": ("modifier", 3)},  "positive"),
+                Trait("Влажные губы",         "", {"classic": ("modifier", 3)},   "positive"),
+                Trait("Следопыт",             "", {"finesse": ("modifier", 3)},   "positive"),
+                Trait("Кураж",                "", {"dancer": ("modifier", 3)},    "positive"),
+                Trait("Притягательные бёдра", "", {"anal": ("modifier", 3)},      "positive"),
+                Trait("Берсерк",              "", {"power": ("modifier", 3)},     "positive"),
+                Trait("Расслабляющие обряды", "", {"masseuse": ("modifier", 3)},  "positive"),
+                Trait("Раскрепощенная",       "", {"fetish": ("modifier", 3)},    "positive"),
+                Trait("Гибкая энергия",       "", {"magic": ("modifier", 3)},     "positive"),
+                Trait("Мечтательница",        "", {"geisha": ("modifier", 3)},    "positive"),
 
 
-                Trait("Фригидная",        "", {"Sex": ("exp_rate", -30)},       "negative"),
-                Trait("Растерянность",    "", {"Combat": ("exp_rate", -30)},    "negative"),
-                Trait("Ленивая",          "", {"Job": ("exp_rate", -30)},       "negative"),
-                Trait("Чёрствая",         "", {"Charm": ("exp_rate", -35)},     "negative"),
-                Trait("Деревянная",       "", {"Grace": ("exp_rate", -35)},     "negative"),
-                Trait("Болезненная",      "", {"Strength": ("exp_rate", -35)},  "negative"),
-                Trait("Забывчивая",       "", {"Erudition": ("exp_rate", -35)}, "negative"),
-                Trait("Консерватор",      "", {"Charm": ("exp_rate", -18), "Sex": ("exp_rate", -18)},       "negative"),
-                Trait("TEMPORARY_2_2_3",  "", {"Charm": ("exp_rate", -18), "Combat": ("exp_rate", -18)},    "negative"),
-                Trait("Халатность",       "", {"Charm": ("exp_rate", -18), "Job": ("exp_rate", -18)},       "negative"),
-                Trait("Бревно",           "", {"Grace": ("exp_rate", -18), "Sex": ("exp_rate", -18)},       "negative"),
-                Trait("Неустойчивость",   "", {"Grace": ("exp_rate", -18), "Combat": ("exp_rate", -18)},    "negative"),
-                Trait("Замкнутая",        "", {"Grace": ("exp_rate", -18), "Job": ("exp_rate", -18)},       "negative"),
-                Trait("Неприступная",     "", {"Strength": ("exp_rate", -18), "Sex": ("exp_rate", -18)},    "negative"),
-                Trait("TEMPORARY_2_4_3",  "", {"Strength": ("exp_rate", -18), "Combat": ("exp_rate", -18)}, "negative"),
-                Trait("TEMPORARY_2_4_4",  "", {"Strength": ("exp_rate", -18), "Job": ("exp_rate", -18)},    "negative"),
-                Trait("Ханжа",            "", {"Erudition": ("exp_rate", -18), "Sex": ("exp_rate", -18)},   "negative"),
-                Trait("Неуравновешенная", "", {"Erudition": ("exp_rate", -18), "Combat": ("exp_rate", -18)},"negative"),
-                Trait("Тугодум",          "", {"Erudition": ("exp_rate", -18), "Job": ("exp_rate", -18)},   "negative"),
+                Trait("Фригидная",        "", {"sex": ("exp_rate", -30)},       "negative"),
+                Trait("Растерянность",    "", {"combat": ("exp_rate", -30)},    "negative"),
+                Trait("Ленивая",          "", {"job": ("exp_rate", -30)},       "negative"),
+                Trait("Чёрствая",         "", {"charm": ("exp_rate", -35)},     "negative"),
+                Trait("Деревянная",       "", {"grace": ("exp_rate", -35)},     "negative"),
+                Trait("Болезненная",      "", {"strength": ("exp_rate", -35)},  "negative"),
+                Trait("Забывчивая",       "", {"erudition": ("exp_rate", -35)}, "negative"),
+                Trait("Консерватор",      "", {"charm": ("exp_rate", -18), "sex": ("exp_rate", -18)},       "negative"),
+                Trait("TEMPORARY_2_2_3",  "", {"charm": ("exp_rate", -18), "combat": ("exp_rate", -18)},    "negative"),
+                Trait("Халатность",       "", {"charm": ("exp_rate", -18), "job": ("exp_rate", -18)},       "negative"),
+                Trait("Бревно",           "", {"grace": ("exp_rate", -18), "sex": ("exp_rate", -18)},       "negative"),
+                Trait("Неустойчивость",   "", {"grace": ("exp_rate", -18), "combat": ("exp_rate", -18)},    "negative"),
+                Trait("Замкнутая",        "", {"grace": ("exp_rate", -18), "job": ("exp_rate", -18)},       "negative"),
+                Trait("Неприступная",     "", {"strength": ("exp_rate", -18), "sex": ("exp_rate", -18)},    "negative"),
+                Trait("TEMPORARY_2_4_3",  "", {"strength": ("exp_rate", -18), "combat": ("exp_rate", -18)}, "negative"),
+                Trait("TEMPORARY_2_4_4",  "", {"strength": ("exp_rate", -18), "job": ("exp_rate", -18)},    "negative"),
+                Trait("Ханжа",            "", {"erudition": ("exp_rate", -18), "sex": ("exp_rate", -18)},   "negative"),
+                Trait("Неуравновешенная", "", {"erudition": ("exp_rate", -18), "combat": ("exp_rate", -18)},"negative"),
+                Trait("Тугодум",          "", {"erudition": ("exp_rate", -18), "job": ("exp_rate", -18)},   "negative"),
 
-                Trait("Аногразмия",              "", {"Sex": ("max_value", -20), "Service": ("max_value", -20), "Classic": ("max_value", -20), "Anal": ("max_value", -20), "Fetish": ("max_value", -20)},      "negative"),
-                Trait("Трусость",                "", {"Combat": ("max_value", -20), "Deception": ("max_value", -20), "Finesse": ("max_value", -20), "Power": ("max_value", -20), "Magic": ("max_value", -20)}, "negative"),
-                Trait("Растяпа",                 "", {"Job": ("max_value", -20), "Waitress": ("max_value", -20), "Dancer": ("max_value", -20), "Masseuse": ("max_value", -20), "Geisha": ("max_value", -20)},  "negative"),
-                Trait("Грубая",                  "", {"Charm": ("max_value", -30), "Service": ("max_value", -30), "Deception": ("max_value", -30), "Waitress": ("max_value", -30)}, "negative"),
-                Trait("Неуклюжая",               "", {"Grace": ("max_value", -30), "Classic": ("max_value", -30), "Finesse": ("max_value", -30), "Dancer": ("max_value", -30)},     "negative"),
-                Trait("Немощная",                "", {"Strength": ("max_value", -30), "Anal": ("max_value", -30), "Power": ("max_value", -30), "Masseuse": ("max_value", -30)},     "negative"),
-                Trait("Легкомысленная",          "", {"Erudition": ("max_value", -30), "Fetish": ("max_value", -30), "Magic": ("max_value", -30), "Geisha": ("max_value", -30)},    "negative"),
-                Trait("Слабая чувствительность", "", {"Service": ("max_value", -70)},   "negative"),
-                Trait("TEMPORARY_4_2_3",         "", {"Deception": ("max_value", -70)}, "negative"),
-                Trait("TEMPORARY_4_2_4",         "", {"Waitress": ("max_value", -70)},  "negative"),
-                Trait("Мимолетное возбуждение",  "", {"Classic": ("max_value", -70)},   "negative"),
-                Trait("Хромая",                  "", {"Finesse": ("max_value", -70)},   "negative"),
-                Trait("TEMPORARY_4_3_4",         "", {"Dancer": ("max_value", -70)},    "negative"),
-                Trait("TEMPORARY_4_4_2",         "", {"Anal": ("max_value", -70)},      "negative"),
-                Trait("Хилая",                   "", {"Power": ("max_value", -70)},     "negative"),
-                Trait("TEMPORARY_4_4_4",         "", {"Masseuse": ("max_value", -70)},  "negative"),
-                Trait("TEMPORARY_4_5_2",         "", {"Fetish": ("max_value", -70)},    "negative"),
-                Trait("Рассеяная",               "", {"Magic": ("max_value", -70)},     "negative"),
-                Trait("Сонный голос",            "", {"Geisha": ("max_value", -70)},    "negative"),
+                Trait("Аногразмия",              "", {"sex": ("max_value", -20), "service": ("max_value", -20), "classic": ("max_value", -20), "anal": ("max_value", -20), "fetish": ("max_value", -20)},      "negative"),
+                Trait("Трусость",                "", {"combat": ("max_value", -20), "deception": ("max_value", -20), "finesse": ("max_value", -20), "power": ("max_value", -20), "magic": ("max_value", -20)}, "negative"),
+                Trait("Растяпа",                 "", {"job": ("max_value", -20), "waitress": ("max_value", -20), "dancer": ("max_value", -20), "masseuse": ("max_value", -20), "geisha": ("max_value", -20)},  "negative"),
+                Trait("Грубая",                  "", {"charm": ("max_value", -30), "service": ("max_value", -30), "deception": ("max_value", -30), "waitress": ("max_value", -30)}, "negative"),
+                Trait("Неуклюжая",               "", {"grace": ("max_value", -30), "classic": ("max_value", -30), "finesse": ("max_value", -30), "dancer": ("max_value", -30)},     "negative"),
+                Trait("Немощная",                "", {"strength": ("max_value", -30), "anal": ("max_value", -30), "power": ("max_value", -30), "masseuse": ("max_value", -30)},     "negative"),
+                Trait("Легкомысленная",          "", {"erudition": ("max_value", -30), "fetish": ("max_value", -30), "magic": ("max_value", -30), "geisha": ("max_value", -30)},    "negative"),
+                Trait("Слабая чувствительность", "", {"service": ("max_value", -70)},   "negative"),
+                Trait("TEMPORARY_4_2_3",         "", {"deception": ("max_value", -70)}, "negative"),
+                Trait("TEMPORARY_4_2_4",         "", {"waitress": ("max_value", -70)},  "negative"),
+                Trait("Мимолетное возбуждение",  "", {"classic": ("max_value", -70)},   "negative"),
+                Trait("Хромая",                  "", {"finesse": ("max_value", -70)},   "negative"),
+                Trait("TEMPORARY_4_3_4",         "", {"dancer": ("max_value", -70)},    "negative"),
+                Trait("TEMPORARY_4_4_2",         "", {"anal": ("max_value", -70)},      "negative"),
+                Trait("Хилая",                   "", {"power": ("max_value", -70)},     "negative"),
+                Trait("TEMPORARY_4_4_4",         "", {"masseuse": ("max_value", -70)},  "negative"),
+                Trait("TEMPORARY_4_5_2",         "", {"fetish": ("max_value", -70)},    "negative"),
+                Trait("Рассеяная",               "", {"magic": ("max_value", -70)},     "negative"),
+                Trait("Сонный голос",            "", {"geisha": ("max_value", -70)},    "negative"),
 
-                Trait("Стеснительная",       "", {"Service": ("modifier", -1), "Classic": ("modifier", -1), "Anal": ("modifier", -1), "Fetish": ("modifier", -1)},     "negative"),
-                Trait("Пацифист",            "", {"Deception": ("modifier", -1), "Finesse": ("modifier", -1), "Power": ("modifier", -1), "Magic": ("modifier", -1)},   "negative"),
-                Trait("Неряха",              "", {"Waitress": ("modifier", -1), "Dancer": ("modifier", -1), "Masseuse": ("modifier", -1), "Geisha": ("modifier", -1)}, "negative"),
-                Trait("Медлительная",        "", {"Service": ("modifier", -2), "Deception": ("modifier", -2), "Waitress": ("modifier", -2)},                           "negative"),
-                Trait("Нелепая",             "", {"Classic": ("modifier", -2), "Finesse": ("modifier", -2), "Dancer": ("modifier", -2)},                               "negative"),
-                Trait("Слабая",              "", {"Anal": ("modifier", -2), "Power": ("modifier", -2), "Masseuse": ("modifier", -2)},                                  "negative"),
-                Trait("Простачка",           "", {"Fetish": ("modifier", -2), "Magic": ("modifier", -2), "Geisha": ("modifier", -2)},                                  "negative"),
-                Trait("TEMPORARY_6_2_2",     "", {"Service": ("modifier", -3)},   "negative"),
-                Trait("TEMPORARY_6_2_3",     "", {"Deception": ("modifier", -3)}, "negative"),
-                Trait("TEMPORARY_6_2_4",     "", {"Waitress": ("modifier", -3)},  "negative"),
-                Trait("TEMPORARY_6_3_2",     "", {"Classic": ("modifier", -3)},   "negative"),
-                Trait("Одноглазая",          "", {"Finesse": ("modifier", -3)},   "negative"),
-                Trait("TEMPORARY_6_3_4",     "", {"Dancer": ("modifier", -3)},    "negative"),
-                Trait("TEMPORARY_6_4_2",     "", {"Anal": ("modifier", -3)},      "negative"),
-                Trait("TEMPORARY_6_4_3",     "", {"Power": ("modifier", -3)},     "negative"),
-                Trait("TEMPORARY_6_4_4",     "", {"Masseuse": ("modifier", -3)},  "negative"),
-                Trait("Скованная",           "", {"Fetish": ("modifier", -3)},    "negative"),
-                Trait("Безумная",            "", {"Magic": ("modifier", -3)},     "negative"),
-                Trait("Плохая дикция",       "", {"Geisha": ("modifier", -3)},    "negative")
+                Trait("Стеснительная",       "", {"service": ("modifier", -1), "classic": ("modifier", -1), "anal": ("modifier", -1), "fetish": ("modifier", -1)},     "negative"),
+                Trait("Пацифист",            "", {"deception": ("modifier", -1), "finesse": ("modifier", -1), "power": ("modifier", -1), "magic": ("modifier", -1)},   "negative"),
+                Trait("Неряха",              "", {"waitress": ("modifier", -1), "dancer": ("modifier", -1), "masseuse": ("modifier", -1), "geisha": ("modifier", -1)}, "negative"),
+                Trait("Медлительная",        "", {"service": ("modifier", -2), "deception": ("modifier", -2), "waitress": ("modifier", -2)},                           "negative"),
+                Trait("Нелепая",             "", {"classic": ("modifier", -2), "finesse": ("modifier", -2), "dancer": ("modifier", -2)},                               "negative"),
+                Trait("Слабая",              "", {"anal": ("modifier", -2), "power": ("modifier", -2), "masseuse": ("modifier", -2)},                                  "negative"),
+                Trait("Простачка",           "", {"fetish": ("modifier", -2), "magic": ("modifier", -2), "geisha": ("modifier", -2)},                                  "negative"),
+                Trait("TEMPORARY_6_2_2",     "", {"service": ("modifier", -3)},   "negative"),
+                Trait("TEMPORARY_6_2_3",     "", {"deception": ("modifier", -3)}, "negative"),
+                Trait("TEMPORARY_6_2_4",     "", {"waitress": ("modifier", -3)},  "negative"),
+                Trait("TEMPORARY_6_3_2",     "", {"classic": ("modifier", -3)},   "negative"),
+                Trait("Одноглазая",          "", {"finesse": ("modifier", -3)},   "negative"),
+                Trait("TEMPORARY_6_3_4",     "", {"dancer": ("modifier", -3)},    "negative"),
+                Trait("TEMPORARY_6_4_2",     "", {"anal": ("modifier", -3)},      "negative"),
+                Trait("TEMPORARY_6_4_3",     "", {"power": ("modifier", -3)},     "negative"),
+                Trait("TEMPORARY_6_4_4",     "", {"masseuse": ("modifier", -3)},  "negative"),
+                Trait("Скованная",           "", {"fetish": ("modifier", -3)},    "negative"),
+                Trait("Безумная",            "", {"magic": ("modifier", -3)},     "negative"),
+                Trait("Плохая дикция",       "", {"geisha": ("modifier", -3)},    "negative")
                 ]
 
     def get_trait_from_all_traits(input_value, not_traits=[]):
@@ -666,6 +646,7 @@ init python:
         def __init__(self, name, eng_name, value, max_value, modifier, exp, exp_rate, parent_1_name, parent_2_name, bar_texture, icon):
             self.name = name
             self.eng_name = eng_name
+            self.title = name.title()
             self.value = value
             self.max_value = max_value
             self.modifier = modifier
@@ -727,7 +708,7 @@ init python:
             return self.value//20 # Пока нет перков прокачки стат
 
     class Personage(store.object):
-        def __init__(self, name='default', pic_directory = 'default', traits=[],
+        def __init__(self, name='default', energy=100, health=100, max_health = 100, pic_directory = 'default', traits=[],
         base_sex=0,          base_combat=0,     base_job=0,      base_charm=0,         base_grace=0,         base_strength=0,         base_erudition=0,
         sec_service=0,       sec_classic=0,     sec_anal=0,      sec_fetish=0, 
         sec_deception=0,     sec_finesse=0,     sec_power=0,     sec_magic=0, 
@@ -735,10 +716,29 @@ init python:
         base_sex_exp=0,      base_combat_exp=0, base_job_exp=0,  base_charm_exp=0,     base_grace_exp=0,     base_strength_exp=0,     base_erudition_exp=0
         ):
             self.name = name
+            self.energy = energy
+            self.health = health
+            self.max_health = max_health
             self.pic_directory = pic_directory
             self.profile_image = self.picture('profile')
             self.init_stats(base_sex, base_combat, base_job, base_charm, base_grace, base_strength, base_erudition, sec_service, sec_classic, sec_anal, sec_fetish, sec_deception, sec_finesse, sec_power, sec_magic, sec_waitress, sec_dancer, sec_masseuse, sec_geisha, base_sex_exp, base_combat_exp, base_job_exp, base_charm_exp, base_grace_exp, base_strength_exp, base_erudition_exp)
             self.init_traits(traits)
+            self.personality = Personality()
+
+        def show(self):
+            print(f"""
+            {self.name}
+            energy: {self.energy}
+            health: {self.health}/{self.max_health}
+            Stats:
+            """)
+            stats = ''
+            for key, stat in self.stat.items():
+                print(f' -{stat.name}: {stat.value}/{stat.max_value}, exp: {stat.exp}, exp_rate: {stat.exp_rate}, mod: {stat.modifier}')
+            print('Traits:')
+            for trait in self.traits:
+                print(f'-{trait.name}')
+            self.personality.show()
 
         # Блок инициализации
         def init_stats(self, 
@@ -748,25 +748,25 @@ init python:
         sec_waitress,    sec_dancer,       sec_masseuse,  sec_geisha,
         base_sex_exp,    base_combat_exp,  base_job_exp,  base_charm_exp,  base_grace_exp,  base_strength_exp,  base_erudition_exp):
             self.stat = {
-                "Sex"       : Stat(name="Секс",        eng_name="Sex"       ,value=base_sex,       max_value=100, modifier=None, exp=base_sex_exp,      exp_rate=1,    parent_1_name="Sex",       parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Combat"    : Stat(name="Бой",         eng_name="Combat"    ,value=base_combat,    max_value=100, modifier=None, exp=base_combat_exp,   exp_rate=1,    parent_1_name="Combat",    parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Job"       : Stat(name="Услуги",      eng_name="Job"       ,value=base_job,       max_value=100, modifier=None, exp=base_job_exp,      exp_rate=1,    parent_1_name="Job",       parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Charm"     : Stat(name="Очарование",  eng_name="Charm"     ,value=base_charm,     max_value=100, modifier=None, exp=base_charm_exp,    exp_rate=1,    parent_1_name="Charm",     parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Grace"     : Stat(name="Грация",      eng_name="Grace"     ,value=base_grace,     max_value=100, modifier=None, exp=base_grace_exp,    exp_rate=1,    parent_1_name="Grace",     parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Strength"  : Stat(name="Сила",        eng_name="Strength"  ,value=base_strength,  max_value=100, modifier=None, exp=base_strength_exp, exp_rate=1,    parent_1_name="Strength",  parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Erudition" : Stat(name="Эрудиция",    eng_name="Erudition" ,value=base_erudition, max_value=100, modifier=None, exp=base_erudition_exp,exp_rate=1,    parent_1_name="Erudition", parent_2_name=None,     bar_texture="dynamic", icon=""),
-                "Service"   : Stat(name="Ласки",       eng_name="Service"   ,value=sec_service,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Charm",     parent_2_name="Sex",    bar_texture="dynamic", icon="service"),
-                "Deception" : Stat(name="Уловки",      eng_name="Deception" ,value=sec_deception,  max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Charm",     parent_2_name="Combat", bar_texture="dynamic", icon="rogue"),
-                "Waitress"  : Stat(name="Официантка",  eng_name="Waitress"  ,value=sec_waitress,   max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Charm",     parent_2_name="Job",    bar_texture="dynamic", icon="waitress"),
-                "Classic"   : Stat(name="Классика",    eng_name="Classic"   ,value=sec_classic,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Grace",     parent_2_name="Sex",    bar_texture="dynamic", icon="sex"),
-                "Finesse"   : Stat(name="Искусность",  eng_name="Finesse"   ,value=sec_finesse,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Grace",     parent_2_name="Combat", bar_texture="dynamic", icon="archer"),
-                "Dancer"    : Stat(name="Танцовщица",  eng_name="Dancer"    ,value=sec_dancer,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Grace",     parent_2_name="Job",    bar_texture="dynamic", icon="dancer"),
-                "Anal"      : Stat(name="Анал",        eng_name="Anal"      ,value=sec_anal,       max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Strength",  parent_2_name="Sex",    bar_texture="dynamic", icon="anal"),
-                "Power"     : Stat(name="Мощь",        eng_name="Power"     ,value=sec_power,      max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Strength",  parent_2_name="Combat", bar_texture="dynamic", icon="warrior"),
-                "Masseuse"  : Stat(name="Массажистка", eng_name="Masseuse"  ,value=sec_masseuse,   max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Strength",  parent_2_name="Job",    bar_texture="dynamic", icon="masseuse"),
-                "Fetish"    : Stat(name="Фетиш",       eng_name="Fetish"    ,value=sec_fetish,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Erudition", parent_2_name="Sex",    bar_texture="dynamic", icon="fetish"),
-                "Magic"     : Stat(name="Магия",       eng_name="Magic"     ,value=sec_magic,      max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Erudition", parent_2_name="Combat", bar_texture="dynamic", icon="mage"),
-                "Geisha"    : Stat(name="Гейша",       eng_name="Geisha"    ,value=sec_geisha,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="Erudition", parent_2_name="Job",    bar_texture="dynamic", icon="geisha")
+                "sex"       : Stat(name="секс",        eng_name="sex"       ,value=base_sex,       max_value=100, modifier=None, exp=base_sex_exp,      exp_rate=1,    parent_1_name="sex",       parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "combat"    : Stat(name="бой",         eng_name="combat"    ,value=base_combat,    max_value=100, modifier=None, exp=base_combat_exp,   exp_rate=1,    parent_1_name="combat",    parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "job"       : Stat(name="услуги",      eng_name="job"       ,value=base_job,       max_value=100, modifier=None, exp=base_job_exp,      exp_rate=1,    parent_1_name="job",       parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "charm"     : Stat(name="очарование",  eng_name="charm"     ,value=base_charm,     max_value=100, modifier=None, exp=base_charm_exp,    exp_rate=1,    parent_1_name="charm",     parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "grace"     : Stat(name="грация",      eng_name="grace"     ,value=base_grace,     max_value=100, modifier=None, exp=base_grace_exp,    exp_rate=1,    parent_1_name="grace",     parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "strength"  : Stat(name="сила",        eng_name="strength"  ,value=base_strength,  max_value=100, modifier=None, exp=base_strength_exp, exp_rate=1,    parent_1_name="strength",  parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "erudition" : Stat(name="эрудиция",    eng_name="erudition" ,value=base_erudition, max_value=100, modifier=None, exp=base_erudition_exp,exp_rate=1,    parent_1_name="erudition", parent_2_name=None,     bar_texture="dynamic", icon=""),
+                "service"   : Stat(name="ласки",       eng_name="service"   ,value=sec_service,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="charm",     parent_2_name="sex",    bar_texture="dynamic", icon="service"),
+                "deception" : Stat(name="уловки",      eng_name="deception" ,value=sec_deception,  max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="charm",     parent_2_name="combat", bar_texture="dynamic", icon="rogue"),
+                "waitress"  : Stat(name="официантка",  eng_name="waitress"  ,value=sec_waitress,   max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="charm",     parent_2_name="job",    bar_texture="dynamic", icon="waitress"),
+                "classic"   : Stat(name="классика",    eng_name="classic"   ,value=sec_classic,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="grace",     parent_2_name="sex",    bar_texture="dynamic", icon="sex"),
+                "finesse"   : Stat(name="искусность",  eng_name="finesse"   ,value=sec_finesse,    max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="grace",     parent_2_name="combat", bar_texture="dynamic", icon="archer"),
+                "dancer"    : Stat(name="танцовщица",  eng_name="dancer"    ,value=sec_dancer,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="grace",     parent_2_name="job",    bar_texture="dynamic", icon="dancer"),
+                "anal"      : Stat(name="анал",        eng_name="anal"      ,value=sec_anal,       max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="strength",  parent_2_name="sex",    bar_texture="dynamic", icon="anal"),
+                "power"     : Stat(name="мощь",        eng_name="power"     ,value=sec_power,      max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="strength",  parent_2_name="combat", bar_texture="dynamic", icon="warrior"),
+                "masseuse"  : Stat(name="массажистка", eng_name="masseuse"  ,value=sec_masseuse,   max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="strength",  parent_2_name="job",    bar_texture="dynamic", icon="masseuse"),
+                "fetish"    : Stat(name="фетиш",       eng_name="fetish"    ,value=sec_fetish,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="erudition", parent_2_name="sex",    bar_texture="dynamic", icon="fetish"),
+                "magic"     : Stat(name="магия",       eng_name="magic"     ,value=sec_magic,      max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="erudition", parent_2_name="combat", bar_texture="dynamic", icon="mage"),
+                "geisha"    : Stat(name="гейша",       eng_name="geisha"    ,value=sec_geisha,     max_value=100, modifier=0,    exp=None,              exp_rate=None, parent_1_name="erudition", parent_2_name="job",    bar_texture="dynamic", icon="geisha")
             }
 
         def init_traits(self, traits):
@@ -864,13 +864,20 @@ init python:
             else:
                 return False
 
-        def change_exp(self, stat, value):
+        def change_exp(self, stat, value=1):
             if type(stat) is str:
-                self.stat[stat].exp += value
+                cur_stat = self.stat[stat]
             elif type(stat) is Stat:
-                stat.exp += value
+                cur_stat = stat
+            else:
+                return None
+            if cur_stat.parent_2_name is None:
+                cur_stat.exp += value*(cur_stat.exp_rate if value > 0 else 1)
+            else:
+                self.change_exp(cur_stat.parent_1_name, value)
+                self.change_exp(cur_stat.parent_2_name, value)
 
-        def stat_upgrade(self, stat, mode=0): #mode - какую характеристику использовать первой при апгрейде. 0 - Очарование, Грация, Сила, Эрудиция; Другое - Секс, Бой, Услуги
+        def stat_upgrade(self, stat, mode=0): #mode - какую характеристику использовать первой при апгрейде. 0 - очарование, грация, сила, эрудиция; Другое - секс, бой, услуги
             if self.is_stat_upgradable(stat):
                 # Расчёт расхода экспы
                 expense_exp = upcost(stat.value)
@@ -974,7 +981,7 @@ screen stat_block(cur_stat, current_companion, button_display='observe'):
     fixed:
         xmaximum bar_xsize+10
         ymaximum bar_ysize+text_size+5
-        text "{color=[cur_stat_colour]}{size=[text_size]}[cur_stat.name]{/size}{/color}" xalign 0.5
+        text "{color=[cur_stat_colour]}{size=[text_size]}[cur_stat.title]{/size}{/color}" xalign 0.5
         bar value AnimatedValue(cur_stat.value, cur_stat.max_value, 0.5):
             left_bar Frame(cur_bar_texture)
             right_bar Frame("gui/bar/empty.png")
@@ -1097,7 +1104,7 @@ screen personage_stats(companion_id=0):
             xsize 620
             ysize 1000
             $ current_companion = companions.list[companion_id]
-            $ stat_list = [current_companion.stat["Service"], current_companion.stat["Deception"], current_companion.stat["Waitress"], current_companion.stat["Classic"], current_companion.stat["Finesse"], current_companion.stat["Dancer"], current_companion.stat["Anal"], current_companion.stat["Power"], current_companion.stat["Masseuse"], current_companion.stat["Fetish"], current_companion.stat["Magic"], current_companion.stat["Geisha"]] # Характеристики текста и ползунков
+            $ stat_list = [current_companion.stat["service"], current_companion.stat["deception"], current_companion.stat["waitress"], current_companion.stat["classic"], current_companion.stat["finesse"], current_companion.stat["dancer"], current_companion.stat["anal"], current_companion.stat["power"], current_companion.stat["masseuse"], current_companion.stat["fetish"], current_companion.stat["magic"], current_companion.stat["geisha"]] # Характеристики текста и ползунков
             vbox:
                 text "[current_companion.name]"
             # Отображение основных характеристик
