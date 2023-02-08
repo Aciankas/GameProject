@@ -2,7 +2,7 @@ screen resource_ui:
     frame:
         has hbox
         add "gold_image"
-        text " [gold] "
+        text " [resourses._gold] "
         textbutton "Меню" action ui.callsinnewcontext("test_menu_label")
 
 screen test_menu:

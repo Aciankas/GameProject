@@ -5,12 +5,20 @@ init python:
     from os.path import isfile, join
     import random
 
+    class Resourses(store.object):
+        def __init__(self, gold: int):
+            self._gold = gold
+
+        def gold_change(self, value: int):
+            self._gold += value
+
     class Dice(store.object):
         def __init__(self, value: int):
             self.roll = random.randint(1, value)
             self.critical_mod = 1
             self.critical = None
-            
+            self.average = (value+1)/2
+
             if self.roll == value: # Критический успех
                 self.critical = True
                 if value == 6:
@@ -179,9 +187,9 @@ init python:
         def can_do(self, option):
             #Может ли персонаж выполнить какое либо действие
             option = option.lower()
-            return ((option in ('service', 'ласки') and self.naughtiness >= 20) 
-                or (option in ('sex', 'classic', 'секс', 'классика') and self.naughtiness >= 40) 
-                or (option in ('anal', 'анал') and self.naughtiness >= 60) 
+            return ((option in ('service', 'ласки') and self.naughtiness >= 20)
+                or (option in ('sex', 'classic', 'секс', 'классика') and self.naughtiness >= 40)
+                or (option in ('anal', 'анал') and self.naughtiness >= 60)
                 or (option in ('fetish', 'bdsm', 'фетиш', 'бдсм') and self.naughtiness >= 80))
 
         def event(self, *events, value=1, param='all'):
@@ -478,7 +486,7 @@ init python:
             result = '{size=30}{u}' + self.name + '{/u}{/size}' #Заголовок инфоокна
             result += '{size=26}' #Размер текста
             for name, effect in self.effects.iteritems():
-                result += '\n' + stat_ru_name[name] + ' '
+                result += '\n' + stat_ru_name[name].title() + ' '
                 if effect[1] > 0:
                     number_text = '{color=' + colour["green"] + '}+' + str(effect[1]) + ''
                 else:
@@ -710,14 +718,18 @@ init python:
     class Personage(store.object):
         def __init__(self, name='default', energy=100, health=100, max_health = 100, pic_directory = 'default', traits=[],
         base_sex=0,          base_combat=0,     base_job=0,      base_charm=0,         base_grace=0,         base_strength=0,         base_erudition=0,
-        sec_service=0,       sec_classic=0,     sec_anal=0,      sec_fetish=0, 
-        sec_deception=0,     sec_finesse=0,     sec_power=0,     sec_magic=0, 
+        sec_service=0,       sec_classic=0,     sec_anal=0,      sec_fetish=0,
+        sec_deception=0,     sec_finesse=0,     sec_power=0,     sec_magic=0,
         sec_waitress=0,      sec_dancer=0,      sec_masseuse=0,  sec_geisha=0,
         base_sex_exp=0,      base_combat_exp=0, base_job_exp=0,  base_charm_exp=0,     base_grace_exp=0,     base_strength_exp=0,     base_erudition_exp=0
         ):
             self.name = name
             self.energy = energy
             self.health = health
+            self.action_flag = 'whore' # 'work'/'whore'/'arena'/'rest'/'training'/'event'
+            self.action_command = False
+            self.action_public = False
+            self.rest_flag = None
             self.max_health = max_health
             self.pic_directory = pic_directory
             self.profile_image = self.picture('profile')
@@ -741,10 +753,10 @@ init python:
             self.personality.show()
 
         # Блок инициализации
-        def init_stats(self, 
+        def init_stats(self,
         base_sex,        base_combat,      base_job,      base_charm,      base_grace,      base_strength,      base_erudition,
-        sec_service,     sec_classic,      sec_anal,      sec_fetish, 
-        sec_deception,   sec_finesse,      sec_power,     sec_magic, 
+        sec_service,     sec_classic,      sec_anal,      sec_fetish,
+        sec_deception,   sec_finesse,      sec_power,     sec_magic,
         sec_waitress,    sec_dancer,       sec_masseuse,  sec_geisha,
         base_sex_exp,    base_combat_exp,  base_job_exp,  base_charm_exp,  base_grace_exp,  base_strength_exp,  base_erudition_exp):
             self.stat = {
@@ -792,6 +804,15 @@ init python:
                 self.add_trait("negative")
                 negative_traits_count += 1
 
+        def work_energy(self):
+            #return: Количество энергии, доступное для работы в этот день
+            return self.energy
+
+        def action_energy(self, action: str = 'default'):
+            # action: тип действия персонажа, для которого необходимо расчитать его цену, учитывая перки
+            # return: количество энергии, затрачиваемое на этот тип действия
+            return 25
+        
         # Блок черт персонажа
         def add_trait(self, trait_name):
             # Простая запись для добавления черты и пересчет параметров
@@ -917,25 +938,26 @@ init python:
                         result_list.append(pic)
                 if len(result_list) != 0:
                     break
-            result = "images/Girls/" + self.pic_directory + "/" + str(result_list[random.randint(0,len(result_list)-1)])
+            result = "images/Girls/" + self.pic_directory + "/" + str(result_list[random.randint(0, len(result_list)-1)])
             return result
 
         def make_profile_image(self):
             self.profile_image = self.picture('profile')
 
     class Personage_List (store.object):
-        def __init__(self):
-            self.list = []
+        def __init__(self, init_list: List[Personage] = None):
+            self.list = init_list or list()
 
-        def add(self, personage):
-            self.list.append(personage)
+        def add(self, value: Personage):
+            self.list.append(value)
 
-        def remove(self, personage):
-            self.list.remove(personage)
+        def remove(self, value: Personage):
+            self.list.remove(value)
 
         def make_profile_image(self):
             for character in self.list:
                 character.make_profile_image()
+
 
 screen personage_screen:
     frame:
@@ -946,14 +968,14 @@ screen personage_screen:
         vbox:
             xsize 620
             ysize 1000
-            for companion_iterator in range(1,len(companions.list)):
+            for companion_iterator in range(1,len(g_companions.list)):
                 hbox:
-                    $ displayed_name = companions.list[companion_iterator].name
+                    $ displayed_name = g_companions.list[companion_iterator].name
                     textbutton "[displayed_name]" action Show("personage_stats", None, companion_iterator)
             textbutton "Вернуться" action Return()
 
 label personage_screen_label:
-    $ companions.make_profile_image()
+    $ g_companions.make_profile_image()
     call screen personage_screen
     return
 
@@ -1103,7 +1125,7 @@ screen personage_stats(companion_id=0):
         vbox:
             xsize 620
             ysize 1000
-            $ current_companion = companions.list[companion_id]
+            $ current_companion = g_companions.list[companion_id]
             $ stat_list = [current_companion.stat["service"], current_companion.stat["deception"], current_companion.stat["waitress"], current_companion.stat["classic"], current_companion.stat["finesse"], current_companion.stat["dancer"], current_companion.stat["anal"], current_companion.stat["power"], current_companion.stat["masseuse"], current_companion.stat["fetish"], current_companion.stat["magic"], current_companion.stat["geisha"]] # Характеристики текста и ползунков
             vbox:
                 text "[current_companion.name]"
