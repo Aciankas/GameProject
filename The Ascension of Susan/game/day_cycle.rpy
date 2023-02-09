@@ -81,6 +81,9 @@ init python:
                 self.weekday = dict_weekday_cycle[self.weekday] 
             self.events.execute_events(self.time, self.weekday)
         
+        def add_event(self, time: str, weekday: str, exec_code: str, repeatable = False):
+            self.events.add(Event(time, weekday, exec_code, repeatable))
+
         def night_routine(self):
             global g_cur_prostitution_night
             g_cur_prostitution_night = Prostitution_Night()
