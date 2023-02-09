@@ -7,7 +7,6 @@
 
 # Игра начинается здесь:
 label start:
-    $ g_time = Day_Cycle()
     $ g_resourses = Resourses(gold=250)
     $ g_companions = Personage_List([Personage('Susan', pic_directory = 'Susan'), Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
     scene forest with dissolve
