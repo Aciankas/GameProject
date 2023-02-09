@@ -4,6 +4,7 @@ init python:
     from os import listdir
     from os.path import isfile, join
     import random
+    import math
 
     class Resourses(store.object):
         def __init__(self, gold: int):
@@ -424,12 +425,6 @@ init python:
                 else:
                     pass
 
-            print(multiplier_mod)
-            print(loyalty_mod)
-            print(discipline_mod)
-            print(mood_mod)
-            print(naughtiness_mod)
-
             param = param.lower()
             if param in ('loyalty', 'лояльность'):
                 self.change('loyalty',         loyalty_mod*value*multiplier_mod)
@@ -539,7 +534,7 @@ init python:
                 Trait("Сильные руки",        "", {"masseuse": ("max_value", 70)},  "positive"),
                 Trait("Богатая фантазия",    "", {"fetish": ("max_value", 70)},    "positive"),
                 Trait("Духовная стойкость",  "", {"magic": ("max_value", 70)},     "positive"),
-                Trait("эрудиция",            "", {"geisha": ("max_value", 70)},    "positive"),
+                Trait("Эрудиция",            "", {"geisha": ("max_value", 70)},    "positive"),
 
                 Trait("Развратница",          "", {"service": ("modifier", 1), "classic": ("modifier", 1), "anal": ("modifier", 1), "fetish": ("modifier", 1)},     "positive"),
                 Trait("Прирождённый боец",    "", {"deception": ("modifier", 1), "finesse": ("modifier", 1), "power": ("modifier", 1), "magic": ("modifier", 1)},   "positive"),
@@ -726,9 +721,6 @@ init python:
             self.name = name
             self.energy = energy
             self.health = health
-            self.action_flag = 'whore' # 'work'/'whore'/'arena'/'rest'/'training'/'event'
-            self.action_command = False
-            self.action_public = False
             self.rest_flag = None
             self.max_health = max_health
             self.pic_directory = pic_directory
@@ -736,6 +728,10 @@ init python:
             self.init_stats(base_sex, base_combat, base_job, base_charm, base_grace, base_strength, base_erudition, sec_service, sec_classic, sec_anal, sec_fetish, sec_deception, sec_finesse, sec_power, sec_magic, sec_waitress, sec_dancer, sec_masseuse, sec_geisha, base_sex_exp, base_combat_exp, base_job_exp, base_charm_exp, base_grace_exp, base_strength_exp, base_erudition_exp)
             self.init_traits(traits)
             self.personality = Personality()
+            # Флаги деятельности
+            self.action_flag = 'whore' # 'work'/'whore'/'arena'/'rest'/'training'/'event'
+            self.action_command = False
+            self.action_public = False
 
         def show(self):
             print(f"""
@@ -812,6 +808,11 @@ init python:
             # action: тип действия персонажа, для которого необходимо расчитать его цену, учитывая перки
             # return: количество энергии, затрачиваемое на этот тип действия
             return 25
+        
+        def acted(self, action: str = 'default', exp_value: float = 1):
+            # action: тип действия персонажа, для которого необходимо выполнить изменения, связанные с персонажем
+            self.energy -= self.action_energy(action)
+            self.change_exp(action, exp_value)
         
         # Блок черт персонажа
         def add_trait(self, trait_name):
@@ -891,6 +892,7 @@ init python:
             elif type(stat) is Stat:
                 cur_stat = stat
             else:
+                print('return None')
                 return None
             if cur_stat.parent_2_name is None:
                 cur_stat.exp += value*(cur_stat.exp_rate if value > 0 else 1)
@@ -1151,7 +1153,9 @@ screen increment_stat(stat, companion):
         ysize 920
         $ parent_stat_1 = companion.stat[stat.parent_1_name]
         $ parent_stat_2 = companion.stat[stat.parent_2_name]
-        $ stat_exp = parent_stat_1.exp+parent_stat_2.exp
+        $ parent_stat_1_exp = math.floor(parent_stat_1.exp)
+        $ parent_stat_2_exp = math.floor(parent_stat_2.exp)
+        $ stat_exp = parent_stat_1_exp+parent_stat_2_exp
         $ expcost = upcost(stat.value)
         $ expcost1 = upcost(parent_stat_1.value)
         $ expcost2 = upcost(parent_stat_2.value)
@@ -1161,11 +1165,11 @@ screen increment_stat(stat, companion):
                 xalign 0.5
                 vbox:
                     use stat_block(parent_stat_1, companion, button_display = 'left')
-                    text "{size=23}Опыт: [parent_stat_1.exp]/[expcost1]{/size}":
+                    text "{size=23}Опыт: [parent_stat_1_exp]/[expcost1]{/size}":
                         xalign 0.5
                 vbox:
                     use stat_block(parent_stat_2, companion, button_display = 'right')
-                    text "{size=23}Опыт: [parent_stat_2.exp]/[expcost2]{/size}":
+                    text "{size=23}Опыт: [parent_stat_2_exp]/[expcost2]{/size}":
                         xalign 0.5
             vbox:
                 xalign 0.5
