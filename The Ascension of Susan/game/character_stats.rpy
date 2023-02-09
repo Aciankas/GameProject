@@ -996,12 +996,13 @@ screen infobox(info='default', orientation='down'):
 
 # Отображение блока характеристики
 screen stat_block(cur_stat, current_companion, button_display='observe'):
-    $ bar_xsize = 200
-    $ bar_ysize = 20
-    $ text_size = 24
-    $ bar_text_size = bar_ysize-3
-    $ cur_stat_colour = current_companion.get_stat_color(cur_stat)
-    $ cur_bar_texture = cur_stat.get_bar_texture()
+    python:
+        bar_xsize = 200
+        bar_ysize = 20
+        text_size = 24
+        bar_text_size = bar_ysize-3
+        cur_stat_colour = current_companion.get_stat_color(cur_stat)
+        cur_bar_texture = cur_stat.get_bar_texture()
     fixed:
         xmaximum bar_xsize+10
         ymaximum bar_ysize+text_size+5
@@ -1151,14 +1152,15 @@ screen increment_stat(stat, companion):
         ypos 20
         xsize 620
         ysize 920
-        $ parent_stat_1 = companion.stat[stat.parent_1_name]
-        $ parent_stat_2 = companion.stat[stat.parent_2_name]
-        $ parent_stat_1_exp = math.floor(parent_stat_1.exp)
-        $ parent_stat_2_exp = math.floor(parent_stat_2.exp)
-        $ stat_exp = parent_stat_1_exp+parent_stat_2_exp
-        $ expcost = upcost(stat.value)
-        $ expcost1 = upcost(parent_stat_1.value)
-        $ expcost2 = upcost(parent_stat_2.value)
+        python:
+            parent_stat_1 = companion.stat[stat.parent_1_name]
+            parent_stat_2 = companion.stat[stat.parent_2_name]
+            parent_stat_1_exp = math.floor(parent_stat_1.exp)
+            parent_stat_2_exp = math.floor(parent_stat_2.exp)
+            stat_exp = parent_stat_1_exp+parent_stat_2_exp
+            expcost = upcost(stat.value)
+            expcost1 = upcost(parent_stat_1.value)
+            expcost2 = upcost(parent_stat_2.value)
         vbox:
             xalign 0.5
             hbox:
