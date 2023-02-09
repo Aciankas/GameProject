@@ -40,36 +40,46 @@ init python:
         'sunday': 'воскресенье'
     }
 
-    class Time_Event(store.object):
-        def __init__(self, time: str, weekday: str, exec_code: str):
+    class Event(store.object):
+        def __init__(self, time: str, weekday: str, exec_code: str, repeatable = False):
             self.time = time
             self.weekday = weekday
             self.exec_code = exec_code
+            self.repeatable = repeatable
         
         def execute(self, time: str, weekday: str):
             if self.time in (time, 'any') and self.weekday in (weekday, 'any'):
                 exec(self.exec_code)
 
 
-    g_time_events = [
-        Time_Event('night', 'any', 'g_time.night_routine()')
-    ]
+    class Event_List(store.object):
+        def __init__(self, init_list: List[Event] = None):
+            self.list = init_list or list()
+        
+        def add(self, value: Event):
+            self.list.append(value)
+
+        def remove(self, value: Event):
+            self.list.remove(value)
+        
+        def execute_events(self, time: str, weekday: str):
+            for event in self.list:
+                event.execute(time, weekday)
+                if not event.repeatable:
+                    self.remove(event)
 
 
     class Day_Cycle(store.object):
-        def __init__(self):
+        def __init__(self, event_list: Event_List):
             self.time = 'morning'
             self.weekday = 'monday'
+            self.events = event_list
         
         def next(self):
             self.time = dict_daytime_cycle[self.time]
             if self.time == 'morning':
                 self.weekday = dict_weekday_cycle[self.weekday] 
-            self.execute_time_events()
-
-        def execute_time_events(self):
-            for event in g_time_events:
-                event.execute(self.time, self.weekday)
+            self.events.execute_events(self.time, self.weekday)
         
         def night_routine(self):
             global g_cur_prostitution_night
@@ -78,5 +88,8 @@ init python:
             self.next()
 
 
-    g_time = Day_Cycle()
+    g_time = Day_Cycle(event_list = Event_List(
+        init_list = [
+            Event('night', 'any', 'g_time.night_routine()', True)
+        ]))
     
