@@ -6,28 +6,11 @@ init python:
     import random
     import math
 
-    dict_daytime_cycle = {
-        'morning': 'day',
-        'day':  'evening',
-        'evening': 'night',
-        'night': 'morning'
-    }
-
     dict_ru_daytime = {
         'morning': 'утро',
         'day':  'день',
         'evening': 'вечер',
         'night': 'ночь'
-    }
-
-    dict_weekday_cycle = {
-        'monday': 'tuesday',
-        'tuesday': 'wednesday',
-        'wednesday': 'thursday',
-        'thursday': 'friday',
-        'friday': 'saturday',
-        'saturday': 'sunday',
-        'sunday': 'monday'
     }
 
     dict_ru_weekday = {
@@ -76,6 +59,21 @@ init python:
             self.events = event_list
         
         def next(self):
+            dict_daytime_cycle = {
+                'morning': 'day',
+                'day':  'evening',
+                'evening': 'night',
+                'night': 'morning'
+            }
+            dict_weekday_cycle = {
+                'monday': 'tuesday',
+                'tuesday': 'wednesday',
+                'wednesday': 'thursday',
+                'thursday': 'friday',
+                'friday': 'saturday',
+                'saturday': 'sunday',
+                'sunday': 'monday'
+            }
             self.time = dict_daytime_cycle[self.time]
             if self.time == 'morning':
                 self.weekday = dict_weekday_cycle[self.weekday] 
