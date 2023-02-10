@@ -1076,7 +1076,7 @@ screen trait_block(trait):
         action NullAction()
 
 # Досье персонажа
-screen personage_stats(companion_id=0):
+screen personage_stats(girl_id=0):
     frame:
         background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
         xpos 10
@@ -1085,7 +1085,7 @@ screen personage_stats(companion_id=0):
         vbox:
             xsize 620
             ysize 1000
-            $ current_companion = g_base.girls.list[companion_id]
+            $ current_companion = g_base.girls.list[girl_id]
             $ stat_list = [current_companion.stat["service"], current_companion.stat["deception"], current_companion.stat["waitress"], current_companion.stat["classic"], current_companion.stat["finesse"], current_companion.stat["dancer"], current_companion.stat["anal"], current_companion.stat["power"], current_companion.stat["masseuse"], current_companion.stat["fetish"], current_companion.stat["magic"], current_companion.stat["geisha"]] # Характеристики текста и ползунков
             vbox:
                 text "[current_companion.name]"

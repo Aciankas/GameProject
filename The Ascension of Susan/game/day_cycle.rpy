@@ -85,8 +85,7 @@ init python:
             self.events.add(Event(time, weekday, exec_code, repeatable))
 
         def night_routine(self, base):
-            base.cur_prostitution_night = Prostitution_Night()
-            base.cur_prostitution_night.commit_night()
+            base.commit_prostitution_night()
             self.night_rest(base)
             self.next()
 

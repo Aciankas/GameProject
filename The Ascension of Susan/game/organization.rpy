@@ -23,3 +23,7 @@ init python:
         
         def gold_change(self, value: int):
             self.gold += value
+
+        def commit_prostitution_night(self):
+            self.cur_prostitution_night = Prostitution_Night(self)
+            self.cur_prostitution_night.commit_night(self)
