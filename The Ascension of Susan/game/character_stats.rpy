@@ -6,13 +6,6 @@ init python:
     import random
     import math
 
-    class Resourses(store.object):
-        def __init__(self, gold: int):
-            self._gold = gold
-
-        def gold_change(self, value: int):
-            self._gold += value
-
     class Dice(store.object):
         def __init__(self, value: int):
             self.roll = random.randint(1, value)
@@ -44,22 +37,6 @@ init python:
                     self.critical_mod = 0.2
                 elif value == 20:
                     self.critical_mod = 0.1
-
-    g_dict_upcost = {
-        140: 250,
-        120: 200,
-        100: 150,
-        80: 100,
-        60: 70,
-        40: 40,
-        20: 20,
-        0: 10
-    }
-
-    def upcost(p_value):
-        for dict_value, dict_upcost in g_dict_upcost.items():
-            if p_value >= dict_value:
-                return dict_upcost
 
     stat_ru_name = {
         "sex": "секс",
@@ -709,19 +686,35 @@ init python:
         # уровень акта (владение характеристикой через таланты)
         def act_level(self):
             return self.value//20 # Пока нет перков прокачки стат
+        
+        def upcost(self):
+            dict_upcost = {
+                140: 250,
+                120: 200,
+                100: 150,
+                80: 100,
+                60: 70,
+                40: 40,
+                20: 20,
+                0: 10
+            }
+            for dict_value, dict_upcost in dict_upcost.items():
+                if self.value >= dict_value:
+                    return dict_upcost
 
     class Personage(store.object):
-        def __init__(self, name='default', energy=100, health=100, max_health = 100, pic_directory = 'default', traits=[],
+        def __init__(self, name='default', energy=100, max_energy = 100, health=100, max_health = 100, pic_directory = 'default', traits=[],
         base_sex=0,          base_combat=0,     base_job=0,      base_charm=0,         base_grace=0,         base_strength=0,         base_erudition=0,
         sec_service=0,       sec_classic=0,     sec_anal=0,      sec_fetish=0,
         sec_deception=0,     sec_finesse=0,     sec_power=0,     sec_magic=0,
         sec_waitress=0,      sec_dancer=0,      sec_masseuse=0,  sec_geisha=0,
-        base_sex_exp=0,      base_combat_exp=0, base_job_exp=0,  base_charm_exp=0,     base_grace_exp=0,     base_strength_exp=0,     base_erudition_exp=0
+        base_sex_exp=0,      base_combat_exp=0, base_job_exp=0,  base_charm_exp=0,     base_grace_exp=0,     base_strength_exp=0,     base_erudition_exp=0, 
+        lore_flag = False
         ):
             self.name = name
             self.energy = energy
+            self.max_energy = max_energy
             self.health = health
-            self.rest_flag = None
             self.max_health = max_health
             self.pic_directory = pic_directory
             self.profile_image = self.picture('profile')
@@ -732,6 +725,8 @@ init python:
             self.action_flag = 'whore' # 'work'/'whore'/'arena'/'rest'/'training'/'event'
             self.action_command = False
             self.action_public = False
+            self.rest_flag = None
+            self.lore_flag = lore_flag # Является ли персонаж сюжетным
 
         def show(self):
             print(f"""
@@ -799,6 +794,9 @@ init python:
             while negative_traits_count < 1:
                 self.add_trait("negative")
                 negative_traits_count += 1
+
+        def night_rest(self):
+            self.energy = self.max_energy
 
         def work_energy(self):
             #return: Количество энергии, доступное для работы в этот день
@@ -881,7 +879,7 @@ init python:
                 cur_exp = parent_stat_1.exp + parent_stat_2.exp
                 if (float(stat.value)/float(stat.max_value) >= float(parent_stat_1.value)/float(parent_stat_1.max_value)) or (float(stat.value)/float(stat.max_value) >= float(parent_stat_2.value)/float(parent_stat_2.max_value)): #Процентно ниже ли доп стата основных, от которых зависит?
                     main_stat_higher_flag = False
-            if (stat.value<stat.max_value) and (cur_exp >= upcost(stat.value)) and main_stat_higher_flag:
+            if (stat.value < stat.max_value) and (cur_exp >= stat.upcost()) and main_stat_higher_flag:
                 return True
             else:
                 return False
@@ -903,7 +901,7 @@ init python:
         def stat_upgrade(self, stat, mode=0): #mode - какую характеристику использовать первой при апгрейде. 0 - очарование, грация, сила, эрудиция; Другое - секс, бой, услуги
             if self.is_stat_upgradable(stat):
                 # Расчёт расхода экспы
-                expense_exp = upcost(stat.value)
+                expense_exp = stat.upcost()
                 if stat.parent_2_name is not None:
                     if mode == 0:
                         expense_exp_1 = self.stat[stat.parent_1_name].exp
@@ -957,8 +955,12 @@ init python:
             self.list.remove(value)
 
         def make_profile_image(self):
-            for character in self.list:
-                character.make_profile_image()
+            for girl in self.list:
+                girl.make_profile_image()
+
+        def night_rest(self):
+            for girl in self.list:
+                girl.night_rest()
 
 
 screen personage_screen:
@@ -970,29 +972,19 @@ screen personage_screen:
         vbox:
             xsize 620
             ysize 1000
-            for companion_iterator in range(1,len(g_companions.list)):
+            for girl_iterator in range(0,len(g_base.girls.list)):
                 hbox:
-                    $ displayed_name = g_companions.list[companion_iterator].name
-                    textbutton "[displayed_name]" action Show("personage_stats", None, companion_iterator)
+                    $ displayed_name = g_base.girls.list[girl_iterator].name
+                    textbutton "[displayed_name]" action Show("personage_stats", None, girl_iterator)
             textbutton "Вернуться" action Return()
 
 label personage_screen_label:
-    $ g_companions.make_profile_image()
+    $ g_base.girls.make_profile_image()
     call screen personage_screen
     return
 
 style textstat:
     color colour['neutral']
-
-screen infobox(info='default', orientation='down'):
-    frame:
-        style "frame_thin_line"
-        pos renpy.get_mouse_pos()
-        if orientation == 'up':
-            anchor (0.0, 1.0)
-        elif orientation == 'down':
-            anchor (0.0, 0.0)
-        text "[info]"
 
 # Отображение блока характеристики
 screen stat_block(cur_stat, current_companion, button_display='observe'):
@@ -1083,41 +1075,6 @@ screen trait_block(trait):
         unhovered Hide("infobox")
         action NullAction()
 
-# Изображение в рамке
-screen framed_image(pic_path, arg_xalign=None, arg_yalign=None, arg_xpos=None, arg_ypos=None, arg_xmax=None, arg_ymax=None, arg_xsize=None, arg_ysize=None):
-    frame:
-        style "frame_empty"
-        xalign arg_xalign
-        yalign arg_yalign
-        python:
-            arg_xpadding = 16
-            arg_ypadding = 16
-            if arg_xmax is None and arg_xsize is None:
-                pic_xsize = 150
-            elif arg_xmax is not None:
-                arg_xsize = None
-                pic_xsize = arg_xmax-arg_xpadding
-            else:
-                pic_xsize = arg_xsize-arg_xpadding
-            if arg_ymax is None and arg_ysize is None:
-                pic_ysize = 300
-            elif arg_ymax is not None:
-                arg_ysize = None
-                pic_ysize = arg_ymax-arg_ypadding
-            else:
-                pic_ysize = arg_ysize-arg_ypadding
-        frame:
-            xpos arg_xpos
-            ypos arg_ypos
-            xmaximum arg_xmax
-            ymaximum arg_ymax
-            xsize arg_xsize
-            ysize arg_ysize
-            padding (arg_xpadding, arg_ypadding)
-            foreground Frame("gui/frame_corner_background.png", 68, 68, 68, 68, tile=True)
-            background None
-            image Transform(pic_path, fit='contain', xysize = (pic_xsize,pic_ysize))
-
 # Досье персонажа
 screen personage_stats(companion_id=0):
     frame:
@@ -1128,7 +1085,7 @@ screen personage_stats(companion_id=0):
         vbox:
             xsize 620
             ysize 1000
-            $ current_companion = g_companions.list[companion_id]
+            $ current_companion = g_base.girls.list[companion_id]
             $ stat_list = [current_companion.stat["service"], current_companion.stat["deception"], current_companion.stat["waitress"], current_companion.stat["classic"], current_companion.stat["finesse"], current_companion.stat["dancer"], current_companion.stat["anal"], current_companion.stat["power"], current_companion.stat["masseuse"], current_companion.stat["fetish"], current_companion.stat["magic"], current_companion.stat["geisha"]] # Характеристики текста и ползунков
             vbox:
                 text "[current_companion.name]"
@@ -1158,9 +1115,9 @@ screen increment_stat(stat, companion):
             parent_stat_1_exp = math.floor(parent_stat_1.exp)
             parent_stat_2_exp = math.floor(parent_stat_2.exp)
             stat_exp = parent_stat_1_exp+parent_stat_2_exp
-            expcost = upcost(stat.value)
-            expcost1 = upcost(parent_stat_1.value)
-            expcost2 = upcost(parent_stat_2.value)
+            expcost = stat.upcost()
+            expcost1 = parent_stat_1.upcost()
+            expcost2 = parent_stat_2.upcost()
         vbox:
             xalign 0.5
             hbox:

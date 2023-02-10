@@ -7,8 +7,7 @@
 
 # Игра начинается здесь:
 label start:
-    $ g_resourses = Resourses(gold=250)
-    $ g_companions = Personage_List([Personage('Susan', pic_directory = 'Susan'), Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
+    $ g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
     scene forest with dissolve
     "Начало"
     jump strt

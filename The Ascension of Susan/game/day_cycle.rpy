@@ -84,15 +84,17 @@ init python:
         def add_event(self, time: str, weekday: str, exec_code: str, repeatable = False):
             self.events.add(Event(time, weekday, exec_code, repeatable))
 
-        def night_routine(self):
-            global g_cur_prostitution_night
-            g_cur_prostitution_night = Prostitution_Night()
-            g_cur_prostitution_night.commit_night()
+        def night_routine(self, base):
+            base.cur_prostitution_night = Prostitution_Night()
+            base.cur_prostitution_night.commit_night()
+            self.night_rest(base)
             self.next()
 
+        def night_rest(self, base):
+            base.girls.night_rest()
 
     g_time = Day_Cycle(event_list = Event_List(
         init_list = [
-            Event('night', 'any', 'g_time.night_routine()', True)
+            Event('night', 'any', 'g_time.night_routine(g_base)', True)
         ]))
-    
+
