@@ -1,5 +1,4 @@
 label prologue:
-    show screen resource_ui
     scene forest with dissolve
     father "Сьюзан, он слева!"
     show susan portrait at left with dissolve

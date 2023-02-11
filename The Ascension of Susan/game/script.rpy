@@ -8,5 +8,5 @@
 # Игра начинается здесь:
 label start:
     $ g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
-    jump prologue
+    jump main_hub_label
     return

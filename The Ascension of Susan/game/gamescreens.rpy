@@ -43,7 +43,7 @@ screen infobox(info='default', orientation='down'):
             anchor (0.0, 0.0)
         text "[info]"
 
-screen resource_ui:
+screen resources:
     python:
         g_base_gold = math.floor(g_base.gold)
         res_menu_text_size = 26
@@ -62,6 +62,23 @@ screen resource_ui:
             idle Transform(g_time.button_picture(), xysize = (64,64))
             action Function(g_time.next)
         image Transform("gold_image", fit='contain', xysize = (30,30))
-        text "{size=[res_menu_text_size]}[g_base_gold]{/size}" xalign 0.9
-        textbutton "{size=[res_menu_text_size]}Меню{/size}" action ui.callsinnewcontext("personage_screen_label") xalign 0.9
-        text "{size=[res_menu_text_size]}[g_base_gold]{/size}"
+        text "{size=[res_menu_text_size]}[g_base_gold]{/size}" ypos 0
+        textbutton "{size=[res_menu_text_size]}Меню персонажей{/size}" action [Show("personage_screen")]
+        textbutton "{size=[res_menu_text_size]}Продолжить историю{/size}" action [Hide("personage_screen"), Hide("personage_stats"), Hide("increment_stat"), Hide("resources"), Jump("prologue")]
+
+screen main_hub:
+    python:
+        main_hub_menu_text_size = 26
+    frame:
+        style "frame_empty"
+        xalign 0.5
+        ypos 50
+        xsize 1920
+        ysize 1030
+        has hbox
+        textbutton "{size=[main_hub_menu_text_size]}Меню персонажей{/size}" action [Show("personage_screen")]
+        textbutton "{size=[main_hub_menu_text_size]}Продолжить историю{/size}" action [Hide("personage_screen"), Hide("personage_stats"), Hide("increment_stat"), Hide("resources"), Jump("prologue")]
+
+label main_hub_label:
+    scene tavern with dissolve
+    call screen resources

@@ -967,7 +967,7 @@ screen personage_screen:
     frame:
         background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
         xpos 1290
-        ypos 20
+        ypos 65
         padding (3, 3, 3, 3)
         vbox:
             xsize 620
@@ -976,7 +976,7 @@ screen personage_screen:
                 hbox:
                     $ displayed_name = g_base.girls.list[girl_iterator].name
                     textbutton "[displayed_name]" action Show("personage_stats", None, girl_iterator)
-            textbutton "Вернуться" action Return()
+            textbutton "Вернуться" action [Hide("personage_screen"), Hide("personage_stats"), Hide("increment_stat")]
 
 label personage_screen_label:
     $ g_base.girls.make_profile_image()
@@ -1080,7 +1080,7 @@ screen personage_stats(girl_id=0):
     frame:
         background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
         xpos 10
-        ypos 20
+        ypos 65
         padding (3, 3, 3, 3)
         vbox:
             xsize 620
@@ -1101,12 +1101,12 @@ screen personage_stats(girl_id=0):
                         use trait_block(trait)
 
     # Портрет
-    use framed_image(current_companion.profile_image, arg_ypos=20, arg_xalign=0.5, arg_xmax=620, arg_ymax=920)
+    use framed_image(current_companion.profile_image, arg_ypos=65, arg_xalign=0.5, arg_xmax=620, arg_ymax=875)
 
 screen increment_stat(stat, companion):
     frame:
         xalign 0.5
-        ypos 20
+        ypos 65
         xsize 620
         ysize 920
         python:
