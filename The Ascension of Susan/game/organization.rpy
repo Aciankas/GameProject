@@ -21,6 +21,7 @@ init python:
             self.client_max_level = 1
             self.client_money_mod = 20
             self.prostitution_difficulty_modifier = 3
+            self.max_girl_capacity = 4
         
         def gold_change(self, value: int):
             self.gold += value

@@ -79,6 +79,15 @@ init python:
                 self.weekday = dict_weekday_cycle[self.weekday] 
             self.events.execute_events(self.time, self.weekday)
         
+        def button_picture(self):
+            dict_daytime_picture = {
+                'morning': "gui/day_cycle/morning.png",
+                'day':  "gui/day_cycle/day.png",
+                'evening': "gui/day_cycle/evening.png",
+                'night': "gui/day_cycle/night.png"
+            }
+            return dict_daytime_picture[self.time]
+        
         def add_event(self, time: str, weekday: str, exec_code: str, repeatable = False):
             self.events.add(Event(time, weekday, exec_code, repeatable))
 

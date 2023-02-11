@@ -8,7 +8,5 @@
 # Игра начинается здесь:
 label start:
     $ g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
-    scene forest with dissolve
-    "Начало"
-    jump strt
+    jump prologue
     return

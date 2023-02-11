@@ -44,8 +44,24 @@ screen infobox(info='default', orientation='down'):
         text "[info]"
 
 screen resource_ui:
+    python:
+        g_base_gold = math.floor(g_base.gold)
+        res_menu_text_size = 26
     frame:
+        style "frame_thin_line"
+        xalign 0.5
+        yalign 0
+        xsize 1920
+        ysize 50
         has hbox
-        add "gold_image"
-        text " [g_base.gold] "
-        textbutton "Меню" action ui.callsinnewcontext("test_menu_label")
+        imagebutton:
+            xsize 64
+            ysize 64
+            xpos -10
+            ypos -10
+            idle Transform(g_time.button_picture(), xysize = (64,64))
+            action Function(g_time.next)
+        image Transform("gold_image", fit='contain', xysize = (30,30))
+        text "{size=[res_menu_text_size]}[g_base_gold]{/size}" xalign 0.9
+        textbutton "{size=[res_menu_text_size]}Меню{/size}" action ui.callsinnewcontext("personage_screen_label") xalign 0.9
+        text "{size=[res_menu_text_size]}[g_base_gold]{/size}"
