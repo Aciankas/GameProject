@@ -76,7 +76,7 @@ screen main_hub:
         ysize 1030
         has hbox
         textbutton "{size=[main_hub_menu_text_size]}Меню персонажей{/size}" action [Hide("main_hub"), Show("personage_screen")]
-        textbutton "{size=[main_hub_menu_text_size]}Продолжить историю{/size}" action [Function(hide_screens), Jump("prologue")]
+        textbutton "{size=[main_hub_menu_text_size]}Продолжить историю{/size}" action [Function(to_story, "prologue")]
 
 label main_hub_label:
     scene tavern with dissolve

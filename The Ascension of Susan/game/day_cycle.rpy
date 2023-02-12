@@ -74,6 +74,7 @@ init python:
                 'saturday': 'sunday',
                 'sunday': 'monday'
             }
+            renpy.checkpoint()
             renpy.retain_after_load()
             self.time = dict_daytime_cycle[self.time]
             if self.time == 'morning':

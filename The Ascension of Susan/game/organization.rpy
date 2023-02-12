@@ -11,6 +11,10 @@ init python:
         user_screen_list = ["personage_screen", "personage_stats", "increment_stat", "resources", "main_hub"]
         for screen in user_screen_list:
             renpy.hide_screen(screen)
+    
+    def to_story(label):
+        hide_screens()
+        renpy.call('lock_label', label)
 
     class Organization(store.object):
         def __init__(self, location = None, gold = None, mc = None, girls = None):
@@ -75,3 +79,7 @@ init python:
         def commit_prostitution_night(self):
             self.cur_prostitution_night = Prostitution_Night(self)
             self.cur_prostitution_night.commit_night(self)
+
+label lock_label(to_label):
+    $ renpy.checkpoint()
+    $ renpy.jump(to_label)
