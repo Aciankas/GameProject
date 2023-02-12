@@ -7,6 +7,11 @@
 
 # Игра начинается здесь:
 label start:
-    $ g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
+    python:
+        g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
+        g_time = Day_Cycle(event_list = Event_List(
+            init_list = [
+                Event('night', 'any', 'g_time.night_routine(g_base)', True)
+            ]))
     jump main_hub_label
     return

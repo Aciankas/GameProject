@@ -74,6 +74,7 @@ init python:
                 'saturday': 'sunday',
                 'sunday': 'monday'
             }
+            renpy.retain_after_load()
             self.time = dict_daytime_cycle[self.time]
             if self.time == 'morning':
                 self.weekday = dict_weekday_cycle[self.weekday] 
@@ -98,11 +99,6 @@ init python:
 
         def night_rest(self, base):
             base.girls.night_rest()
-
-    g_time = Day_Cycle(event_list = Event_List(
-        init_list = [
-            Event('night', 'any', 'g_time.night_routine(g_base)', True)
-        ]))
 
 label night_action_label:
     #call screen prostitution_night
