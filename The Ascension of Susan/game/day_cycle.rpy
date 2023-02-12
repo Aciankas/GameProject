@@ -94,7 +94,7 @@ init python:
         def night_routine(self, base):
             base.commit_prostitution_night()
             self.night_rest(base)
-            self.next()
+            renpy.jump("night_action_label")
 
         def night_rest(self, base):
             base.girls.night_rest()
@@ -104,3 +104,7 @@ init python:
             Event('night', 'any', 'g_time.night_routine(g_base)', True)
         ]))
 
+label night_action_label:
+    #call screen prostitution_night
+    $ g_time.next()
+    jump main_hub_label

@@ -129,3 +129,8 @@ init python:
                     break
                 self.commited_acts.append(self.commit_act(base, cur_act))
             return self.commited_acts
+
+#screen prostitution_night():
+
+
+#screen prostitution_girl(girl_id = None):

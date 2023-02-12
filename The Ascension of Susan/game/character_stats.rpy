@@ -976,7 +976,7 @@ screen personage_screen:
                 hbox:
                     $ displayed_name = g_base.girls.list[girl_iterator].name
                     textbutton "[displayed_name]" action Show("personage_stats", None, girl_iterator)
-            textbutton "Вернуться" action [Hide("personage_screen"), Hide("personage_stats"), Hide("increment_stat")]
+            textbutton "Вернуться" action [Hide("personage_screen"), Hide("personage_stats"), Hide("increment_stat"), Show("main_hub")]
 
 label personage_screen_label:
     $ g_base.girls.make_profile_image()
@@ -1083,25 +1083,27 @@ screen personage_stats(girl_id=0):
         ypos 65
         padding (3, 3, 3, 3)
         vbox:
-            xsize 620
+            xsize 630
             ysize 1000
             $ current_companion = g_base.girls.list[girl_id]
             $ stat_list = [current_companion.stat["service"], current_companion.stat["deception"], current_companion.stat["waitress"], current_companion.stat["classic"], current_companion.stat["finesse"], current_companion.stat["dancer"], current_companion.stat["anal"], current_companion.stat["power"], current_companion.stat["masseuse"], current_companion.stat["fetish"], current_companion.stat["magic"], current_companion.stat["geisha"]] # Характеристики текста и ползунков
             vbox:
                 text "[current_companion.name]"
             # Отображение основных характеристик
-            vbox:
+            frame:
+                style "frame_thin_line"
                 yalign 1.0
-                grid 3 4:
-                    for cur_stat in stat_list:
-                        use stat_block(cur_stat, current_companion, button_display = 'stats')
-            # Отображение черт персонажа
-                hbox:
-                    for trait in current_companion.traits:
-                        use trait_block(trait)
+                vbox:
+                    grid 3 4:
+                        for cur_stat in stat_list:
+                            use stat_block(cur_stat, current_companion, button_display = 'stats')
+                # Отображение черт персонажа
+                    hbox:
+                        for trait in current_companion.traits:
+                            use trait_block(trait)
 
     # Портрет
-    use framed_image(current_companion.profile_image, arg_ypos=65, arg_xalign=0.5, arg_xmax=620, arg_ymax=875)
+    use framed_image(current_companion.profile_image, arg_xpos=20, arg_ypos=65, arg_xalign=0.5, arg_xmax=600, arg_ymax=875)
 
 screen increment_stat(stat, companion):
     frame:
