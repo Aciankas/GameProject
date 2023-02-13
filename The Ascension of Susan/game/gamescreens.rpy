@@ -77,8 +77,15 @@ screen main_hub:
         has hbox
         textbutton "{size=[main_hub_menu_text_size]}Меню персонажей{/size}" action [Hide("main_hub"), Show("personage_screen")]
         textbutton "{size=[main_hub_menu_text_size]}Продолжить историю{/size}" action [Function(to_story, "prologue")]
+        textbutton "{size=[main_hub_menu_text_size]}Проверка{/size}" action [ToggleScreen("the_test_screen")]
 
 label main_hub_label:
     scene tavern with dissolve
     show screen main_hub
     call screen resources
+
+screen the_test_screen:
+    use prostitution_client(g_base.cur_prostitution_night.clients.list[0], 200, 200)
+    use prostitution_client(g_base.cur_prostitution_night.clients.list[1], 200, 350)
+    use prostitution_girl(g_base.girls.list[0], 400, 200)
+    use prostitution_girl(g_base.girls.list[1], 400, 350)

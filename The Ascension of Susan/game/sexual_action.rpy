@@ -139,6 +139,11 @@ init python:
     g_prostitution_client_screen_text_size = 20
     g_prostitution_client_screen_statsize = int(g_prostitution_client_screen_ysize/1.8)
 
+    g_prostitution_girl_screen_xsize = 200
+    g_prostitution_girl_screen_ysize = 90
+
+
+
 screen prostitution_client(client, x_pos = 0, y_pos = 0):
     python:
         client_pic = client.picture()
@@ -160,6 +165,17 @@ screen prostitution_client(client, x_pos = 0, y_pos = 0):
             image Transform(client_bonus_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), xpos = g_prostitution_client_screen_xsize-g_prostitution_client_screen_statsize-5)
         else:
             image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_ysize-6, g_prostitution_client_screen_ysize-6), xpos = g_prostitution_client_screen_ysize-2) 
+
+screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
+    python:
+        girl_pic = girl.picture("portrait")
+    frame:
+        style "frame_brothel_client"
+        xpos x_pos
+        ypos y_pos
+        xsize g_prostitution_girl_screen_xsize
+        ysize g_prostitution_girl_screen_ysize
+        image Transform(girl_pic, fit='contain', xysize = (g_prostitution_client_screen_ysize-6,g_prostitution_client_screen_ysize-6))
 
 #screen prostitution_night():
 

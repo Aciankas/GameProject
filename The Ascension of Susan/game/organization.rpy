@@ -73,11 +73,11 @@ init python:
                 17711: 21
             }
             for dict_value, dict_clients in dict_client_rep.items():
-                if self.brothel_rep >= dict_value:
+                if self.brothel_rep <= dict_value:
                     return dict_clients
 
         def commit_prostitution_night(self):
-            self.cur_prostitution_night = Prostitution_Night(self)
+            self.cur_prostitution_night = Prostitution_Night(self, client_quantity = self.brothel_clients())
             self.cur_prostitution_night.commit_night(self)
 
 label lock_label(to_label):

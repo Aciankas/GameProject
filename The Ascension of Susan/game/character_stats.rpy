@@ -717,6 +717,7 @@ init python:
             self.health = health
             self.max_health = max_health
             self.pic_directory = pic_directory
+            self.drop_static_pictires() # Задать очищенный словарь для фиксации генерации изображений определенных тегов
             self.profile_image = self.picture('profile')
             self.init_stats(base_sex, base_combat, base_job, base_charm, base_grace, base_strength, base_erudition, sec_service, sec_classic, sec_anal, sec_fetish, sec_deception, sec_finesse, sec_power, sec_magic, sec_waitress, sec_dancer, sec_masseuse, sec_geisha, base_sex_exp, base_combat_exp, base_job_exp, base_charm_exp, base_grace_exp, base_strength_exp, base_erudition_exp)
             self.init_traits(traits)
@@ -933,16 +934,23 @@ init python:
             pic_list = os.listdir(path)
             result_list = []
             for title in titles:
+                if title in self.static_titles and self.static_titles[title]:
+                    random_picture = self.static_titles[title]
+                    break
                 for pic in pic_list:
                     if title in pic:
                         result_list.append(pic)
                 if len(result_list) != 0:
+                    random_picture = str(result_list[random.randint(0, len(result_list)-1)])
+                    if title in self.static_titles and not self.static_titles[title]:
+                        self.static_titles[title] = random_picture
                     break
-            result = "images/Girls/" + self.pic_directory + "/" + str(result_list[random.randint(0, len(result_list)-1)])
+            result = "images/Girls/" + self.pic_directory + "/" + random_picture
             return result
+        
+        def drop_static_pictires(self):
+            self.static_titles = {'profile': None, 'portrait': None}
 
-        def make_profile_image(self):
-            self.profile_image = self.picture('profile')
 
     class Personage_List (store.object):
         def __init__(self, init_list: List[Personage] = None):
@@ -956,7 +964,11 @@ init python:
 
         def make_profile_image(self):
             for girl in self.list:
-                girl.make_profile_image()
+                girl.picture('profile')
+
+        def drop_static_pictires(self):
+            for girl in self.list:
+                girl.drop_static_pictires()
 
         def night_rest(self):
             for girl in self.list:

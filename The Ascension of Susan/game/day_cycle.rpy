@@ -96,8 +96,8 @@ init python:
         def night_routine(self, base):
             base.commit_prostitution_night()
             self.night_rest(base)
+            base.girls.drop_static_pictires()
             renpy.jump("night_action_label")
-
         def night_rest(self, base):
             base.girls.night_rest()
 
