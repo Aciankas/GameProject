@@ -965,10 +965,9 @@ init python:
 
 screen personage_screen:
     frame:
-        background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
+        style "frame_transparent"
         xpos 1290
         ypos 65
-        padding (3, 3, 3, 3)
         vbox:
             xsize 620
             ysize 1000
@@ -1078,10 +1077,9 @@ screen trait_block(trait):
 # Досье персонажа
 screen personage_stats(girl_id=0):
     frame:
-        background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
+        style "frame_transparent"
         xpos 10
         ypos 65
-        padding (3, 3, 3, 3)
         vbox:
             xsize 630
             ysize 1000

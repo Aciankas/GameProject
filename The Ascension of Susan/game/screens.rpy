@@ -77,9 +77,13 @@ style frame:
     background Frame("gui/frame.png", 68, 68, 68, 68, tile=True)
 
 style frame_transparent:
-    xpadding 10
-    ypadding 10
+    padding (3, 3, 3, 3)
     background Frame(im.MatrixColor("gui/frame.png", im.matrix.brightness(-1) * im.matrix.opacity(0.65)))
+
+style frame_brothel_client:
+    xpadding 3
+    ypadding 3
+    background Frame("gui/frame_edge_line.png", 68, 68, 68, 68, tile=True)
 
 style frame_simple:
     xpadding 25

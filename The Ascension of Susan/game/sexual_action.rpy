@@ -15,7 +15,10 @@ init python:
             else:                          self.prefered_act = prefered_act
             if bonus_act == 'random':   self.bonus_act = self.random_bonus_prostitution_act()
             else:                       self.bonus_act = bonus_act
-    
+
+        def picture(self):
+            return "images/clients/icons/thug.jpg"
+
         @staticmethod
         def random_prostitution_act():
             return g_client_possible_acts[random.randint(0,len(g_client_possible_acts)-1)]
@@ -129,6 +132,34 @@ init python:
                     break
                 self.commited_acts.append(self.commit_act(base, cur_act))
             return self.commited_acts
+    
+    g_prostitution_client_screen_xsize = 120
+    g_prostitution_client_screen_ysize = 60
+    g_prostitution_client_screen_text_font = "DejaVuSans.ttf"
+    g_prostitution_client_screen_text_size = 20
+    g_prostitution_client_screen_statsize = int(g_prostitution_client_screen_ysize/1.8)
+
+screen prostitution_client(client, x_pos = 0, y_pos = 0):
+    python:
+        client_pic = client.picture()
+        client_pref_stat = g_base.girls.list[0].stat[client.prefered_act].get_icon(postfix="lightgold")
+        if client.bonus_act is not None:
+            client_bonus_stat = g_base.girls.list[0].stat[client.bonus_act].get_icon(postfix="light")
+        else:
+            client_bonus_stat = False
+    frame:
+        style "frame_brothel_client"
+        xpos x_pos
+        ypos y_pos
+        xsize g_prostitution_client_screen_xsize
+        ysize g_prostitution_client_screen_ysize
+        image Transform(client_pic, fit='contain', xysize = (g_prostitution_client_screen_ysize-6,g_prostitution_client_screen_ysize-6))
+        text '{font=[g_prostitution_client_screen_text_font]}{size=[g_prostitution_client_screen_text_size]}{b}[client.level]{/b}{/size}{/font}' ypos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5 xpos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-2
+        if client_bonus_stat:
+            image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), xpos = g_prostitution_client_screen_ysize-2, ypos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_statsize-5) 
+            image Transform(client_bonus_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), xpos = g_prostitution_client_screen_xsize-g_prostitution_client_screen_statsize-5)
+        else:
+            image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_ysize-6, g_prostitution_client_screen_ysize-6), xpos = g_prostitution_client_screen_ysize-2) 
 
 #screen prostitution_night():
 
