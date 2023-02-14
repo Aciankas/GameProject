@@ -54,9 +54,9 @@ init python:
             if client.bonus_act is not None:
                 if girl.stat[client.bonus_act].act_level() >= client.level - 1:     self.bonus_act_mod = 4
                 elif girl.stat[client.bonus_act].act_level() == client.level - 1:   self.bonus_act_mod = 2
-                else:                                                               self.bonus_act_mod = -1
-            else:                                                                   self.bonus_act_mod = 0
-            self._roll_base = base.prostitution_difficulty_modifier + girl.stat[client.prefered_act].act_level() - client.level
+                else:                                                                                                      self.bonus_act_mod = -1
+            else:                                                                                                          self.bonus_act_mod = 0
+            self._roll_base = base.prostitution_difficulty_modifier + girl.stat[client.prefered_act].act_mastery() - client.level
             self._roll_bonuses = self.bonus_act_mod + (girl.stat[client.prefered_act].modifier + ((girl.stat[client.prefered_act].value - client.level*20)/2 + (girl.stat[girl.stat[client.prefered_act].parent_2_name].value - client.level*20)/2)/20)
             self.profit = round((min(self._roll_base + self.dice.roll, 10) + self._roll_bonuses)/10 * client.money * self.dice.critical_mod)
             if self.profit < client.money/5:
@@ -133,15 +133,22 @@ init python:
                 self.commited_acts.append(self.commit_act(base, cur_act))
             return self.commited_acts
     
-    g_prostitution_client_screen_xsize = 120
     g_prostitution_client_screen_ysize = 60
-    g_prostitution_client_screen_text_font = "DejaVuSans.ttf"
-    g_prostitution_client_screen_text_size = 20
+    g_prostitution_client_screen_xsize = g_prostitution_client_screen_ysize*2
+    g_prostitution_client_screen_text_size = int(g_prostitution_client_screen_ysize/3)
     g_prostitution_client_screen_statsize = int(g_prostitution_client_screen_ysize/1.8)
 
-    g_prostitution_girl_screen_xsize = 200
-    g_prostitution_girl_screen_ysize = 90
+    g_prostitution_girl_screen_pic_size = 90
+    g_prostitution_girl_screen_text_size = int(g_prostitution_girl_screen_pic_size*1/3)
+    g_prostitution_girl_screen_main_statsize = int(g_prostitution_girl_screen_pic_size*2/3)
+    g_prostitution_girl_screen_main_stat_text_size = int(g_prostitution_girl_screen_main_statsize/3)
+    g_prostitution_girl_screen_sec_statsize = int(g_prostitution_girl_screen_pic_size*11/24)
+    g_prostitution_girl_screen_sec_stat_text_size = int(g_prostitution_girl_screen_sec_statsize/2)
+    g_prostitution_girl_screen_xsize = int(g_prostitution_girl_screen_pic_size*11/3)+3
+    g_prostitution_girl_screen_ysize = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize+3
 
+    g_prostitution_screen_text_font = "DejaVuSans.ttf"
+    g_skill_level_pic = "gui/bar/level_icon.png"
 
 
 screen prostitution_client(client, x_pos = 0, y_pos = 0):
@@ -159,23 +166,49 @@ screen prostitution_client(client, x_pos = 0, y_pos = 0):
         xsize g_prostitution_client_screen_xsize
         ysize g_prostitution_client_screen_ysize
         image Transform(client_pic, fit='contain', xysize = (g_prostitution_client_screen_ysize-6,g_prostitution_client_screen_ysize-6))
-        text '{font=[g_prostitution_client_screen_text_font]}{size=[g_prostitution_client_screen_text_size]}{b}[client.level]{/b}{/size}{/font}' ypos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5 xpos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-2
+        image Transform(g_skill_level_pic, fit='contain', xysize = (g_prostitution_client_screen_text_size+4,g_prostitution_client_screen_text_size+4), 
+            ypos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5, 
+            xpos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-7)
+        text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_client_screen_text_size]}{b}[client.level]{/b}{/size}{/font}' ypos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5 xpos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-2
         if client_bonus_stat:
-            image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), xpos = g_prostitution_client_screen_ysize-2, ypos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_statsize-5) 
-            image Transform(client_bonus_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), xpos = g_prostitution_client_screen_xsize-g_prostitution_client_screen_statsize-5)
+            image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), 
+                xpos = g_prostitution_client_screen_ysize-2, 
+                ypos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_statsize-5) 
+            image Transform(client_bonus_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), 
+                xpos = g_prostitution_client_screen_xsize-g_prostitution_client_screen_statsize-5)
         else:
             image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_ysize-6, g_prostitution_client_screen_ysize-6), xpos = g_prostitution_client_screen_ysize-2) 
 
 screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
     python:
         girl_pic = girl.picture("portrait")
+        main_stat_pics = list()
+        for stat_name in g_client_possible_acts:
+            main_stat_pics.append((girl.stat[stat_name].get_icon(postfix="lightgold"), girl.stat[stat_name].act_level()))
+        secondary_stat_pics = list()
+        for stat_name in g_client_possible_bonus_acts:
+            secondary_stat_pics.append((girl.stat[stat_name].get_icon(postfix="light"), girl.stat[stat_name].act_level()))
     frame:
         style "frame_brothel_client"
         xpos x_pos
         ypos y_pos
         xsize g_prostitution_girl_screen_xsize
         ysize g_prostitution_girl_screen_ysize
-        image Transform(girl_pic, fit='contain', xysize = (g_prostitution_client_screen_ysize-6,g_prostitution_client_screen_ysize-6))
+        image Transform(girl_pic, fit='contain', xysize = (g_prostitution_girl_screen_pic_size-1,g_prostitution_girl_screen_pic_size-1))
+        text '{size=[g_prostitution_girl_screen_text_size]}[girl.name]{/size}' xpos g_prostitution_girl_screen_pic_size+2
+        for idx, stat in enumerate(main_stat_pics):
+            image Transform(stat[0], fit='contain', xysize = (g_prostitution_girl_screen_main_statsize-2,g_prostitution_girl_screen_main_statsize-2), 
+                xpos = g_prostitution_girl_screen_pic_size+idx*g_prostitution_girl_screen_main_statsize, 
+                ypos = g_prostitution_girl_screen_text_size)
+            image Transform(g_skill_level_pic, fit='contain', xysize = (g_prostitution_girl_screen_main_stat_text_size + 4, g_prostitution_girl_screen_main_stat_text_size + 4), 
+                xpos = g_prostitution_girl_screen_pic_size+(idx+1)*g_prostitution_girl_screen_main_statsize-g_prostitution_girl_screen_main_stat_text_size-2, 
+                ypos = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_text_size-g_prostitution_girl_screen_main_stat_text_size-2)
+            $ cur_stat_lvl = stat[1]
+            text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_main_stat_text_size]}[cur_stat_lvl]{/size}{/font}' # xpos , ypos
+        for idx, stat in enumerate(secondary_stat_pics):
+            image Transform(stat[0], fit='contain', xysize = (g_prostitution_girl_screen_sec_statsize-1,g_prostitution_girl_screen_sec_statsize-1), 
+                xpos = idx*g_prostitution_girl_screen_sec_statsize, 
+                ypos = g_prostitution_girl_screen_pic_size)
 
 #screen prostitution_night():
 

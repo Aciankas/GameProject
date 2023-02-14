@@ -683,9 +683,13 @@ init python:
                 cur_stat_icon = "images/icons/stats/" + icon + ".png"
             return Transform(cur_stat_icon, fit='contain', xysize = (x,y))
 
+        # Уровень владения навыком (в будущем через перки)
+        def act_mastery(self):
+            return self.value//20
+
         # уровень акта (владение характеристикой через таланты)
         def act_level(self):
-            return self.value//20 # Пока нет перков прокачки стат
+            return self.act_mastery() + self.modifier 
         
         def upcost(self):
             dict_upcost = {
