@@ -167,9 +167,9 @@ screen prostitution_client(client, x_pos = 0, y_pos = 0):
         ysize g_prostitution_client_screen_ysize
         image Transform(client_pic, fit='contain', xysize = (g_prostitution_client_screen_ysize-6,g_prostitution_client_screen_ysize-6))
         image Transform(g_skill_level_pic, fit='contain', xysize = (g_prostitution_client_screen_text_size+4,g_prostitution_client_screen_text_size+4), 
-            ypos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5, 
-            xpos = g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-7)
-        text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_client_screen_text_size]}{b}[client.level]{/b}{/size}{/font}' ypos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5 xpos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-2
+            xpos = g_prostitution_client_screen_ysize-int(g_prostitution_client_screen_text_size*1.3), 
+            ypos = g_prostitution_client_screen_ysize-int(g_prostitution_client_screen_text_size*1.25))
+        text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_client_screen_text_size]}{b}[client.level]{/b}{/size}{/font}' xpos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-2 ypos g_prostitution_client_screen_ysize-g_prostitution_client_screen_text_size-5
         if client_bonus_stat:
             image Transform(client_pref_stat, fit='contain', xysize = (g_prostitution_client_screen_statsize, g_prostitution_client_screen_statsize), 
                 xpos = g_prostitution_client_screen_ysize-2, 
@@ -201,14 +201,23 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
                 xpos = g_prostitution_girl_screen_pic_size+idx*g_prostitution_girl_screen_main_statsize, 
                 ypos = g_prostitution_girl_screen_text_size)
             image Transform(g_skill_level_pic, fit='contain', xysize = (g_prostitution_girl_screen_main_stat_text_size + 4, g_prostitution_girl_screen_main_stat_text_size + 4), 
-                xpos = g_prostitution_girl_screen_pic_size+(idx+1)*g_prostitution_girl_screen_main_statsize-g_prostitution_girl_screen_main_stat_text_size-2, 
-                ypos = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_text_size-g_prostitution_girl_screen_main_stat_text_size-2)
-            $ cur_stat_lvl = stat[1]
-            text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_main_stat_text_size]}[cur_stat_lvl]{/size}{/font}' # xpos , ypos
+                xpos = g_prostitution_girl_screen_pic_size+(idx+1)*g_prostitution_girl_screen_main_statsize-int(g_prostitution_girl_screen_main_stat_text_size*1.3), 
+                ypos = g_prostitution_girl_screen_pic_size-g_prostitution_girl_screen_main_stat_text_size)
+            python:
+                cur_stat_lvl = stat[1]
+                x_text_mover = int(g_prostitution_girl_screen_main_stat_text_size*0.25) if len(str(cur_stat_lvl)) >= 2 else 0
+            text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_main_stat_text_size]}[cur_stat_lvl]{/size}{/font}' xpos g_prostitution_girl_screen_pic_size+(idx+1)*g_prostitution_girl_screen_main_statsize-g_prostitution_girl_screen_main_stat_text_size-x_text_mover ypos g_prostitution_girl_screen_pic_size-g_prostitution_girl_screen_main_stat_text_size
         for idx, stat in enumerate(secondary_stat_pics):
             image Transform(stat[0], fit='contain', xysize = (g_prostitution_girl_screen_sec_statsize-1,g_prostitution_girl_screen_sec_statsize-1), 
                 xpos = idx*g_prostitution_girl_screen_sec_statsize, 
                 ypos = g_prostitution_girl_screen_pic_size)
+            image Transform(g_skill_level_pic, fit='contain', xysize = (g_prostitution_girl_screen_sec_stat_text_size + 4, g_prostitution_girl_screen_sec_stat_text_size + 4), 
+                xpos = (idx+1)*g_prostitution_girl_screen_sec_statsize-int(g_prostitution_girl_screen_sec_stat_text_size*1.3), 
+                ypos = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize-int(g_prostitution_girl_screen_sec_stat_text_size*1))
+            python:
+                cur_stat_lvl = stat[1]
+                x_text_mover = int(g_prostitution_girl_screen_sec_stat_text_size*0.25) if len(str(cur_stat_lvl)) >= 2 else 0
+            text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_sec_stat_text_size]}[cur_stat_lvl]{/size}{/font}' xpos (idx+1)*g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size-x_text_mover ypos g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size
 
 #screen prostitution_night():
 
