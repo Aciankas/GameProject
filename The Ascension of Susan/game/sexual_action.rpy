@@ -194,6 +194,8 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
         ypos y_pos
         xsize g_prostitution_girl_screen_xsize
         ysize g_prostitution_girl_screen_ysize
+        image Transform("gui/lap_girl_left.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = -3-int(g_prostitution_girl_screen_ysize*0.2), ypos = -3)
+        image Transform("gui/lap_girl_right.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = g_prostitution_girl_screen_xsize+3-int(g_prostitution_girl_screen_ysize*0.2), ypos = -3)
         image Transform(girl_pic, fit='contain', xysize = (g_prostitution_girl_screen_pic_size-1,g_prostitution_girl_screen_pic_size-1))
         text '{size=[g_prostitution_girl_screen_text_size]}[girl.name]{/size}' xpos g_prostitution_girl_screen_pic_size+2
         for idx, stat in enumerate(main_stat_pics):
@@ -219,7 +221,14 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
                 x_text_mover = int(g_prostitution_girl_screen_sec_stat_text_size*0.25) if len(str(cur_stat_lvl)) >= 2 else 0
             text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_sec_stat_text_size]}[cur_stat_lvl]{/size}{/font}' xpos (idx+1)*g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size-x_text_mover ypos g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size
 
-#screen prostitution_night():
+screen prostitution_night:
+    for idx, client in enumerate(g_base.cur_prostitution_night.clients.list):
+        use prostitution_client(client, 100, 100+idx*int(g_prostitution_client_screen_ysize*1.25))
+    use prostitution_girl(g_base.girls.list[0], 400, 200)
+    use prostitution_girl(g_base.girls.list[1], 400, 350)
 
-
-#screen prostitution_girl(girl_id = None):
+    imagebutton:
+        xsize 1920
+        ysize 1080
+        idle "gui/Empty.png"
+        action Return()

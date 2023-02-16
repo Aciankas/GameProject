@@ -98,10 +98,13 @@ init python:
             self.night_rest(base)
             base.girls.drop_static_pictires()
             renpy.jump("night_action_label")
+            
         def night_rest(self, base):
             base.girls.night_rest()
 
 label night_action_label:
-    #call screen prostitution_night
+    $ hide_screens()
+    scene scene_red_light_night with dissolve
+    call screen prostitution_night
     $ g_time.next()
     jump main_hub_label

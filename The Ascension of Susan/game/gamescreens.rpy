@@ -1,3 +1,14 @@
+init python:
+    # Служебные функции для Ren`py:
+    def hide_screens():
+        user_screen_list = ["personage_screen", "personage_stats", "increment_stat", "resources", "main_hub"]
+        for screen in user_screen_list:
+            renpy.hide_screen(screen)
+    
+    def to_story(label):
+        hide_screens()
+        renpy.call('lock_label', label)
+
 # Изображение в рамке
 screen framed_image(pic_path, arg_xalign=None, arg_yalign=None, arg_xpos=None, arg_ypos=None, arg_xmax=None, arg_ymax=None, arg_xsize=None, arg_ysize=None):
     frame:
@@ -80,12 +91,6 @@ screen main_hub:
         textbutton "{size=[main_hub_menu_text_size]}Проверка{/size}" action [ToggleScreen("the_test_screen")]
 
 label main_hub_label:
-    scene tavern with dissolve
+    scene scene_tavern with dissolve
     show screen main_hub
     call screen resources
-
-screen the_test_screen:
-    use prostitution_client(g_base.cur_prostitution_night.clients.list[0], 200, 200)
-    use prostitution_client(g_base.cur_prostitution_night.clients.list[1], 200, 350)
-    use prostitution_girl(g_base.girls.list[0], 400, 200)
-    use prostitution_girl(g_base.girls.list[1], 400, 350)

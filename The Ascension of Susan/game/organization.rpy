@@ -6,16 +6,6 @@ init python:
     import random
     import math
 
-    # Служебные функции для Ren`py:
-    def hide_screens():
-        user_screen_list = ["personage_screen", "personage_stats", "increment_stat", "resources", "main_hub"]
-        for screen in user_screen_list:
-            renpy.hide_screen(screen)
-    
-    def to_story(label):
-        hide_screens()
-        renpy.call('lock_label', label)
-
     class Organization(store.object):
         def __init__(self, location = None, gold = None, mc = None, girls = None):
             self.location = location or 'start' 
