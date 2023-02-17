@@ -104,7 +104,7 @@ init python:
 
 label night_action_label:
     $ hide_screens()
-    scene scene_red_light_night with dissolve
+    scene red_light_night_bg with dissolve
     call screen prostitution_night
     $ g_time.next()
     jump main_hub_label

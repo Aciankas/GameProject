@@ -228,6 +228,8 @@ screen prostitution_night:
     use prostitution_girl(g_base.girls.list[0], 600, 200)
     use prostitution_girl(g_base.girls.list[1], 600, 350)
 
+    image "anim_example"
+
     imagebutton:
         xsize 1920
         ysize 1080
