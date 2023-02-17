@@ -2,6 +2,7 @@ init python:
     import renpy.store as store
     import renpy.exports as renpy
     import random
+    import time
     g_client_possible_acts = ['service', 'classic', 'anal', 'fetish']
     g_client_possible_bonus_acts = ['deception', 'finesse', 'power', 'magic', 'waitress', 'dancer', 'masseuse', 'geisha']
 
@@ -223,9 +224,9 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
 
 screen prostitution_night:
     for idx, client in enumerate(g_base.cur_prostitution_night.clients.list):
-        use prostitution_client(client, 100, 100+idx*int(g_prostitution_client_screen_ysize*1.25))
-    use prostitution_girl(g_base.girls.list[0], 400, 200)
-    use prostitution_girl(g_base.girls.list[1], 400, 350)
+        use prostitution_client(client, 100+int(idx/11)*int(g_prostitution_client_screen_xsize*1.2), 110+int(idx%11)*int(g_prostitution_client_screen_ysize*1.3))
+    use prostitution_girl(g_base.girls.list[0], 600, 200)
+    use prostitution_girl(g_base.girls.list[1], 600, 350)
 
     imagebutton:
         xsize 1920
