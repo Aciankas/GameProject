@@ -83,7 +83,7 @@ style frame_transparent:
 style frame_brothel_client:
     xpadding 3
     ypadding 3
-    background Frame("gui/frame_edge_line.png", 68, 68, 68, 68, tile=True)
+    background Frame("gui/frame_edge_line_medium_transparent.png", 68, 68, 68, 68, tile=True)
 
 style frame_simple:
     xpadding 25

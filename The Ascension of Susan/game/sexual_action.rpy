@@ -194,8 +194,8 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
         ypos y_pos
         xsize g_prostitution_girl_screen_xsize
         ysize g_prostitution_girl_screen_ysize
-        image Transform("gui/lap_girl_left.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = -3-int(g_prostitution_girl_screen_ysize*0.2), ypos = -3)
-        image Transform("gui/lap_girl_right.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = g_prostitution_girl_screen_xsize+3-int(g_prostitution_girl_screen_ysize*0.2), ypos = -3)
+        image Transform("gui/lap_girl_left.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = -3-int(g_prostitution_girl_screen_ysize*0.3), ypos = -3)
+        image Transform("gui/lap_girl_right.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = g_prostitution_girl_screen_xsize+3-int(g_prostitution_girl_screen_ysize*0.1), ypos = -3)
         image Transform(girl_pic, fit='contain', xysize = (g_prostitution_girl_screen_pic_size-1,g_prostitution_girl_screen_pic_size-1))
         text '{size=[g_prostitution_girl_screen_text_size]}[girl.name]{/size}' xpos g_prostitution_girl_screen_pic_size+2
         for idx, stat in enumerate(main_stat_pics):
