@@ -223,13 +223,23 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
             text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_sec_stat_text_size]}[cur_stat_lvl]{/size}{/font}' xpos (idx+1)*g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size-x_text_mover ypos g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size
 
 screen prostitution_night:
+    python:
+        l_client_start_x = 100
+        l_client_start_y = 110
+        l_client_rows = 11
     for idx, client in enumerate(g_base.cur_prostitution_night.clients.list):
-        use prostitution_client(client, 100+int(idx/11)*int(g_prostitution_client_screen_xsize*1.2), 110+int(idx%11)*int(g_prostitution_client_screen_ysize*1.3))
+        use prostitution_client(client, 
+            l_client_start_x+int(idx/l_client_rows)*int(g_prostitution_client_screen_xsize*1.2), 
+            l_client_start_y+int(idx%l_client_rows)*int(g_prostitution_client_screen_ysize*1.3))
+        image revealer("red_light_night_bg",
+            l_client_start_x+int(idx/l_client_rows)*int(g_prostitution_client_screen_xsize*1.2),
+            l_client_start_y+int(idx%l_client_rows)*int(g_prostitution_client_screen_ysize*1.3),
+            g_prostitution_client_screen_xsize,
+            g_prostitution_client_screen_ysize,
+            0.15*idx)
     use prostitution_girl(g_base.girls.list[0], 600, 200)
     use prostitution_girl(g_base.girls.list[1], 600, 350)
-
-    image "anim_example"
-
+    
     imagebutton:
         xsize 1920
         ysize 1080
