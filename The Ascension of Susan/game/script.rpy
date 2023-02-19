@@ -8,7 +8,7 @@
 # Игра начинается здесь:
 label start:
     python:
-        g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty')])
+        g_base = Organization(gold = 250, girls = [Personage('Angelise', pic_directory = 'Angelise'), Personage('Empty', pic_directory = 'Empty'), Personage('Angelise2', pic_directory = 'Angelise'), Personage('Empty2', pic_directory = 'Empty')])
         g_time = Day_Cycle(event_list = Event_List(
             init_list = [
                 Event('night', 'any', 'g_time.night_routine(g_base)', True)

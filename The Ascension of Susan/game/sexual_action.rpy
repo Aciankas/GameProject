@@ -81,8 +81,10 @@ init python:
         def generate_acts(self, base):
             # return: Составляет список всех возможных действий за ночь
             possible_acts_list = list()
+            self.whored_girls_id = list()
             for girl_id, girl in enumerate(base.girls.list):
                 if girl.action_flag == 'whore':
+                    self.whored_girls_id.append(girl_id)
                     for client_id, client in enumerate(self.clients.list):
                         if not client.served and girl.work_energy() >= girl.action_energy(client.prefered_act):
                             cur_act = Prostitution_Act(base, self, girl_id = girl_id, client_id = client_id)
@@ -317,21 +319,29 @@ screen prostitution_night:
             )
     # Девочки:
     python:
-        l_frame_girl_xpos = 1920-l_frame_client_xpos-l_frame_client_xsize
-        l_frame_girl_ypos = l_frame_client_ypos
-        l_frame_girl_xsize = l_frame_client_xsize
-        l_frame_girl_ysize = l_frame_client_ysize
-        l_girl_cur_xpos = l_frame_girl_xpos+(l_frame_girl_xsize-g_prostitution_girl_screen_xsize)//2
-        l_girl_cur_ypos = l_frame_girl_ypos+(l_frame_girl_xsize-g_prostitution_girl_screen_xsize)//4
-    image Frame("gui/no_frame_high_transparent.png", l_client_border_px, l_client_border_px,
-        xpos = l_frame_girl_xpos, 
-        ypos = l_frame_girl_ypos, 
-        xsize = l_frame_girl_xsize, 
-        ysize = l_frame_girl_ysize
-        )
-    for idx, girl in enumerate(g_base.girls.list):
-        if girl.action_flag == 'whore':
-            use prostitution_girl(girl, l_girl_cur_xpos, l_girl_cur_ypos)
+        l_frame_girl_xpos = l_frame_client_xpos+l_frame_client_xsize+30
+        l_frame_girl_start_ypos = l_frame_client_ypos
+        l_frame_girl_xsize = 1920-l_frame_girl_xpos-l_client_start_x
+        l_frame_girl_ysize = int(g_prostitution_girl_screen_ysize*1.2)
+        l_frame_girl_y_gap = int(l_frame_girl_ysize*1.1)
+        l_girl_screen_xpos = l_frame_girl_xpos+int(g_prostitution_girl_screen_xsize*0.12)
+
+        # Timers
+        l_girl_start_time = l_client_full_time
+        l_each_girl_time = 2
+
+    for idx, girl_id in enumerate(g_base.cur_prostitution_night.whored_girls_id):
+        python:
+            girl = g_base.girls.list[girl_id]
+            cur_frame_ypos = l_frame_girl_start_ypos+idx*l_frame_girl_y_gap
+            cur_girl_screen_ypos = cur_frame_ypos+int((l_frame_girl_ysize-g_prostitution_girl_screen_ysize)/2)
+        image Frame("gui/no_frame_high_transparent.png", l_client_border_px, l_client_border_px,
+            xpos = l_frame_girl_xpos, 
+            ypos = cur_frame_ypos, 
+            xsize = l_frame_girl_xsize, 
+            ysize = l_frame_girl_ysize
+            )
+        use prostitution_girl(girl, l_girl_screen_xpos, cur_girl_screen_ypos)
             
 
     
