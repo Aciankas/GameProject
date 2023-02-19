@@ -20,3 +20,8 @@ init:
         crop_revealer(img, x_pos, y_pos, x_size, y_size, pauser, to_img)
         pause re_pauser-pauser
         Transform(Crop((x_pos, y_pos, x_size, y_size), img), xpos = x_pos, ypos = y_pos) with Dissolve(0.2)
+    
+    transform frame_revealer(img, x_border = 0, y_border = 0, x_pos = 0, y_pos = 0, x_size = 1, y_size = 1, pauser = 0.0, to_img = "nothing_bg", dissolver = 0.2):
+        Frame(img, x_border, y_border, xpos = x_pos, ypos= y_pos, xsize = x_size, ysize = y_size)
+        pause pauser
+        Frame(to_img, x_border, y_border, xpos = x_pos, ypos= y_pos, xsize = x_size, ysize = y_size) with Dissolve(dissolver)
