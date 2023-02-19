@@ -53,6 +53,7 @@ init python:
                     result.sort(key=lambda x: x.commited_act_number)
             return result
 
+
     class Prostitution_Act(store.object):
         def __init__(self, base, night, girl_id: int, client_id: int):
             self.girl_id = girl_id
