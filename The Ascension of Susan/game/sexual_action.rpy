@@ -12,6 +12,7 @@ init python:
             self.expected_money = base.client_money_mod*self.level
             self.money = round(self.expected_money*random.uniform(0.85, 1.15))
             self.served = False
+            self.girl_id = None
             if prefered_act == 'random':   self.prefered_act = self.random_prostitution_act()
             else:                          self.prefered_act = prefered_act
             if bonus_act == 'random':   self.bonus_act = self.random_bonus_prostitution_act()
@@ -121,6 +122,7 @@ init python:
             girl.personality.event('sex', 'peace', 'command' if girl.action_command else 'freedom', 'public' if girl.action_public else 'private')
             girl.acted(client.prefered_act)
             client.served = True
+            client.girl_id = act.girl_id
             base.gold_change(act.profit)
             base.brothel_rep_change(act.reputation)
             return act
@@ -222,23 +224,116 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
                 x_text_mover = int(g_prostitution_girl_screen_sec_stat_text_size*0.25) if len(str(cur_stat_lvl)) >= 2 else 0
             text '{font=[g_prostitution_screen_text_font]}{size=[g_prostitution_girl_screen_sec_stat_text_size]}[cur_stat_lvl]{/size}{/font}' xpos (idx+1)*g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size-x_text_mover ypos g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize-g_prostitution_girl_screen_sec_stat_text_size
 
+screen framecrop_revealer(framefile, bckgrnd, x_pos = 0, y_pos = 0, x_size = 1, y_size = 1, pauser = 0.0, re_pauser = None):
+    if re_pauser is None:
+        image crop_revealer(bckgrnd,
+            x_pos,
+            y_pos,
+            x_size,
+            y_size,
+            pauser)
+        image revealer(Transform(framefile,
+                xpos = x_pos,
+                ypos = y_pos,
+                xsize = x_size,
+                ysize = y_size),
+            pauser)
+    else:
+        image re_crop_revealer(bckgrnd,
+            x_pos,
+            y_pos,
+            x_size,
+            y_size,
+            pauser,
+            re_pauser)
+        image re_revealer(Transform(framefile,
+                xpos = x_pos,
+                ypos = y_pos,
+                xsize = x_size,
+                ysize = y_size),
+            pauser,
+            re_pauser,
+            "nothing_bg")
+
 screen prostitution_night:
     python:
+        l_client_quantity = len(g_base.cur_prostitution_night.clients.list)
         l_client_start_x = 100
         l_client_start_y = 110
-        l_client_rows = 11
+        l_client_max_row_length = 11
+        l_client_max_rows = 4
+        l_client_full_time = 4
+        l_client_border_px = 7
+        l_client_x_gap = int(g_prostitution_client_screen_xsize*1.2)
+        l_client_y_gap = int(g_prostitution_client_screen_ysize*1.3)
+        l_client_showed = l_client_quantity if l_client_quantity<l_client_max_rows*l_client_max_row_length else l_client_max_rows*l_client_max_row_length
+        l_client_actual_rows = 1+(l_client_showed-1)//l_client_max_row_length
+        l_client_actual_row_length = l_client_quantity if l_client_quantity<l_client_max_row_length else l_client_max_row_length
+        # Динамическая рамка #l_client_start_x = l_client_start_x+int(l_client_x_gap*(l_client_max_rows-l_client_actual_rows)/2)
+        # Динамическая рамка #l_client_start_y = l_client_start_y+int(l_client_y_gap*(l_client_max_row_length-l_client_actual_row_length)*1/5)
+        l_frame_client_xpos = l_client_start_x-l_client_border_px
+        l_frame_client_ypos = l_client_start_y-l_client_border_px
+        l_frame_client_xsize = l_client_x_gap*(l_client_max_rows-1)+g_prostitution_client_screen_xsize+l_client_border_px*2
+        l_frame_client_ysize = l_client_y_gap*(l_client_max_row_length-1)+g_prostitution_client_screen_ysize+l_client_border_px*2
+        # Timers
+        l_client_time = l_client_full_time/l_client_showed if l_client_full_time/l_client_showed<0.3 else 0.3
+        l_client_full_time = l_client_time*l_client_showed
+    image Frame("gui/no_frame_high_transparent.png", l_client_border_px, l_client_border_px,
+        xpos = l_frame_client_xpos, 
+        ypos = l_frame_client_ypos, 
+        xsize = l_frame_client_xsize, 
+        ysize = l_frame_client_ysize
+        )
+    # Динамическая рамка
+    #image revealer(
+    #    Transform("nothing_bg",
+    #        xpos = l_client_start_x-l_client_border_px,
+    #        ypos = l_client_start_y-l_client_border_px,
+    #        xsize = l_client_x_gap*(l_client_actual_rows-1)+g_prostitution_client_screen_xsize+l_client_border_px*2,
+    #        ysize = l_client_y_gap*(l_client_actual_row_length-1)+g_prostitution_client_screen_ysize+l_client_border_px*2
+    #        ),
+    #    0.0,
+    #    Frame("gui/no_frame_high_transparent.png", l_client_border_px, l_client_border_px,
+    #        xpos = l_client_start_x-l_client_border_px, 
+    #        ypos = l_client_start_y-l_client_border_px, 
+    #        xsize = l_client_x_gap*(l_client_actual_rows-1)+g_prostitution_client_screen_xsize+l_client_border_px*2, 
+    #        ysize = l_client_y_gap*(l_client_actual_row_length-1)+g_prostitution_client_screen_ysize+l_client_border_px*2
+    #        )
+    #)
     for idx, client in enumerate(g_base.cur_prostitution_night.clients.list):
-        use prostitution_client(client, 
-            l_client_start_x+int(idx/l_client_rows)*int(g_prostitution_client_screen_xsize*1.2), 
-            l_client_start_y+int(idx%l_client_rows)*int(g_prostitution_client_screen_ysize*1.3))
-        image revealer("red_light_night_bg",
-            l_client_start_x+int(idx/l_client_rows)*int(g_prostitution_client_screen_xsize*1.2),
-            l_client_start_y+int(idx%l_client_rows)*int(g_prostitution_client_screen_ysize*1.3),
-            g_prostitution_client_screen_xsize,
-            g_prostitution_client_screen_ysize,
-            0.15*idx)
-    use prostitution_girl(g_base.girls.list[0], 600, 200)
-    use prostitution_girl(g_base.girls.list[1], 600, 350)
+        if idx < l_client_showed:
+            use prostitution_client(client, 
+                l_client_start_x+int(idx/l_client_max_row_length)*l_client_x_gap, 
+                l_client_start_y+int(idx%l_client_max_row_length)*l_client_y_gap)
+            use framecrop_revealer(
+                "gui/no_frame_high_transparent.png",
+                "red_light_night_bg",
+                l_client_start_x+int(idx/l_client_max_row_length)*l_client_x_gap,
+                l_client_start_y+int(idx%l_client_max_row_length)*l_client_y_gap,
+                g_prostitution_client_screen_xsize,
+                g_prostitution_client_screen_ysize+4,
+                l_client_time*idx,
+                None if client.girl_id is None else l_client_full_time+1
+            )
+    # Девочки:
+    python:
+        l_frame_girl_xpos = 1920-l_frame_client_xpos-l_frame_client_xsize
+        l_frame_girl_ypos = l_frame_client_ypos
+        l_frame_girl_xsize = l_frame_client_xsize
+        l_frame_girl_ysize = l_frame_client_ysize
+        l_girl_cur_xpos = l_frame_girl_xpos+(l_frame_girl_xsize-g_prostitution_girl_screen_xsize)//2
+        l_girl_cur_ypos = l_frame_girl_ypos+(l_frame_girl_xsize-g_prostitution_girl_screen_xsize)//4
+    image Frame("gui/no_frame_high_transparent.png", l_client_border_px, l_client_border_px,
+        xpos = l_frame_girl_xpos, 
+        ypos = l_frame_girl_ypos, 
+        xsize = l_frame_girl_xsize, 
+        ysize = l_frame_girl_ysize
+        )
+    for idx, girl in enumerate(g_base.girls.list):
+        if girl.action_flag == 'whore':
+            use prostitution_girl(girl, l_girl_cur_xpos, l_girl_cur_ypos)
+            
+
     
     imagebutton:
         xsize 1920
