@@ -103,8 +103,13 @@ init python:
             base.girls.night_rest()
 
 label night_action_label:
-    $ hide_screens()
+    python:
+        hide_screens()
+    # Ночь борделя
     scene red_light_night_bg with dissolve
     call screen prostitution_night
+    python:
+        for act in g_base.cur_prostitution_night.commited_acts:
+            renpy.call_screen("prostitution_night_act", act)
     $ g_time.next()
     jump main_hub_label

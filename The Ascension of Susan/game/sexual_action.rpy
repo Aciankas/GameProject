@@ -150,8 +150,12 @@ init python:
                 if cur_act is None:
                     break
                 self.commited_acts.append(self.commit_act(base, cur_act))
+                self.commited_acts.sort(key=lambda x: x.girl_id)
             return self.commited_acts
     
+    g_screens_x_gap = 100
+    g_screens_y_gap = 110
+
     g_prostitution_client_screen_ysize = 60
     g_prostitution_client_screen_xsize = g_prostitution_client_screen_ysize*2
     g_prostitution_client_screen_text_size = int(g_prostitution_client_screen_ysize/3)
@@ -165,6 +169,7 @@ init python:
     g_prostitution_girl_screen_sec_stat_text_size = int(g_prostitution_girl_screen_sec_statsize/2)
     g_prostitution_girl_screen_xsize = int(g_prostitution_girl_screen_pic_size*11/3)+3
     g_prostitution_girl_screen_ysize = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize+3
+    g_prostitution_girl_screen_left_right_gaps = int(g_prostitution_girl_screen_xsize*0.12)
 
     g_prostitution_screen_text_font = "DejaVuSans.ttf"
     g_skill_level_pic = "gui/bar/level_icon.png"
@@ -274,8 +279,8 @@ screen framecrop_revealer(framefile, bckgrnd, x_pos = 0, y_pos = 0, x_size = 1, 
 screen prostitution_night:
     python:
         l_client_quantity = len(g_base.cur_prostitution_night.clients.list)
-        l_client_start_x = 100
-        l_client_start_y = 110
+        l_client_start_x = g_screens_x_gap
+        l_client_start_y = g_screens_y_gap
         l_client_max_row_length = 11
         l_client_max_rows = 4
         l_client_border_px = 7
@@ -327,11 +332,10 @@ screen prostitution_night:
         l_frame_girl_xsize = 1920 - l_frame_girl_xpos - l_client_start_x
         l_frame_girl_ysize = int(g_prostitution_girl_screen_ysize*1.2)
         l_frame_girl_y_gap = int(l_frame_girl_ysize*1.1)
-        l_girl_screen_left_right_gaps = int(g_prostitution_girl_screen_xsize*0.12)
-        l_girl_screen_xpos = l_frame_girl_xpos + l_girl_screen_left_right_gaps
-        l_girl_client_start_x_gap = g_prostitution_girl_screen_xsize + l_girl_screen_left_right_gaps*2
-        l_girl_client_max_row_length = int((l_frame_girl_xsize - g_prostitution_girl_screen_xsize - 2*l_girl_screen_left_right_gaps)/g_prostitution_client_screen_xsize)
-        l_girl_client_x_gap = int((l_frame_girl_xsize - g_prostitution_girl_screen_xsize - 2*l_girl_screen_left_right_gaps)/l_girl_client_max_row_length)
+        l_girl_screen_xpos = l_frame_girl_xpos + g_prostitution_girl_screen_left_right_gaps
+        l_girl_client_start_x_gap = g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
+        l_girl_client_max_row_length = int((l_frame_girl_xsize - g_prostitution_girl_screen_xsize - 2*g_prostitution_girl_screen_left_right_gaps)/g_prostitution_client_screen_xsize)
+        l_girl_client_x_gap = int((l_frame_girl_xsize - g_prostitution_girl_screen_xsize - 2*g_prostitution_girl_screen_left_right_gaps)/l_girl_client_max_row_length)
         l_girl_client_max_rows = int(l_frame_girl_ysize/g_prostitution_client_screen_ysize)
         l_girl_client_start_y_gap = int((l_frame_girl_ysize/l_girl_client_max_rows - g_prostitution_client_screen_ysize)/2)
         l_girl_client_y_gap = g_prostitution_client_screen_ysize + l_girl_client_start_y_gap*2
@@ -386,6 +390,20 @@ screen prostitution_night:
             l_each_girl_time*girl_idx
         )
     
+    imagebutton:
+        xsize 1920
+        ysize 1080
+        idle "gui/Empty.png"
+        action Return()
+
+screen prostitution_night_act(act):
+    python:
+        girl = g_base.girls.list[act.girl_id]
+
+        l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps+g_screens_x_gap
+        l_girl_screen_ypos = 1080-g_prostitution_girl_screen_ysize-g_screens_y_gap
+    use prostitution_girl(girl, l_girl_screen_xpos, l_girl_screen_ypos)
+
     imagebutton:
         xsize 1920
         ysize 1080
