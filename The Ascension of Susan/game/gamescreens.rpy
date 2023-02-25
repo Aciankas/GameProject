@@ -9,6 +9,16 @@ init python:
         hide_screens()
         renpy.call('lock_label', label)
 
+# Экран пропуска экранов
+screen skip_screen:
+    key config.keymap["skip"]+["game_menu", ' ', 'K_KP_ENTER'] action Return()
+    imagebutton:
+        xsize 1920
+        ysize 1080
+        idle "gui/Empty.png"
+        action Return()
+
+
 # Изображение в рамке
 screen framed_image(pic_path, arg_xalign=None, arg_yalign=None, arg_xpos=None, arg_ypos=None, arg_xmax=None, arg_ymax=None, arg_xsize=None, arg_ysize=None):
     frame:

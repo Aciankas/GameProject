@@ -106,10 +106,32 @@ label night_action_label:
     python:
         hide_screens()
     # Ночь борделя
+    $ quick_menu = False
     scene red_light_night_bg with dissolve
-    call screen prostitution_night
-    python:
-        for act in g_base.cur_prostitution_night.commited_acts:
-            renpy.call_screen("prostitution_night_act", act)
+    $ g_current_night_act = g_base.cur_prostitution_night.first_commited_act()
+    if g_current_night_act is not None:
+        jump prostitution_night_label
+    else:
+        jump prostitution_night_label_end
+
+label prostitution_night_label:
+    if not renpy.is_skipping(): 
+        call screen prostitution_night
+    jump prostitution_night_label_act
+
+label prostitution_night_label_act:
+    if not renpy.is_skipping(): 
+        call screen prostitution_night_act(g_current_night_act)
+    $ g_current_night_act = g_base.cur_prostitution_night.next_commited_act(g_current_night_act)
+    if g_current_night_act is not None:
+        jump prostitution_night_label_act
+    else:
+        jump prostitution_night_label_end
+
+label prostitution_night_label_end:
+    jump night_action_label_end
+
+label night_action_label_end:
     $ g_time.next()
+    $ quick_menu = True
     jump main_hub_label

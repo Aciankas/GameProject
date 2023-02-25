@@ -152,6 +152,18 @@ init python:
                 self.commited_acts.append(self.commit_act(base, cur_act))
                 self.commited_acts.sort(key=lambda x: x.girl_id)
             return self.commited_acts
+        
+        def first_commited_act(self):
+            if len(self.commited_acts) == 0: return None
+            else: return self.commited_acts[0]
+        
+        def next_commited_act(self, act):
+            if len(self.commited_acts) == 0: return None
+            for idx, cur_act in enumerate(self.commited_acts):
+                if cur_act.girl_id == act.girl_id and cur_act.client_id == act.client_id:
+                    if idx + 1 == len(self.commited_acts): return None
+                    else: return self.commited_acts[idx + 1]
+
     
     g_screens_x_gap = 100
     g_screens_y_gap = 110
@@ -389,12 +401,8 @@ screen prostitution_night:
             l_frame_girl_ysize,
             l_each_girl_time*girl_idx
         )
-    
-    imagebutton:
-        xsize 1920
-        ysize 1080
-        idle "gui/Empty.png"
-        action Return()
+
+    use skip_screen
 
 screen prostitution_night_act(act):
     python:
@@ -404,8 +412,4 @@ screen prostitution_night_act(act):
         l_girl_screen_ypos = 1080-g_prostitution_girl_screen_ysize-g_screens_y_gap
     use prostitution_girl(girl, l_girl_screen_xpos, l_girl_screen_ypos)
 
-    imagebutton:
-        xsize 1920
-        ysize 1080
-        idle "gui/Empty.png"
-        action Return()
+    use skip_screen
