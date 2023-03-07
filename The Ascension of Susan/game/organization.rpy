@@ -6,6 +6,44 @@ init python:
     import random
     import math
 
+
+    class Dice(store.object):
+        def __init__(self, value: int):
+            critical_mod_success = {
+                4: 1.1,
+                6: 1.25,
+                8: 1.5,
+                10: 2,
+                12: 2.25,
+                20: 3}
+            critical_mod_failure = {
+                4: 0.9,
+                6: 0.7,
+                8: 0.4,
+                10: 0.25,
+                12: 0.2,
+                20: 0.1}
+            dice_roll_pictures = {
+                4: "gui/dice/dice-d4.png",
+                6: "gui/dice/dice-d6.png",
+                8: "gui/dice/dice-d8.png",
+                10: "gui/dice/dice-d10.png",
+                12: "gui/dice/dice-d12.png",
+                20: "gui/dice/dice-d20.png"}
+            
+            self.roll = random.randint(1, value)
+            self.critical_mod = 1
+            self.critical = None
+            self.average = (value+1)/2
+            if self.roll == value: # Критический успех
+                self.critical = True
+                self.critical_mod = critical_mod_success[self.roll]
+            if self.roll == 1: # Критический провал
+                self.critical = False
+                self.critical_mod = critical_mod_failure[value]
+            self.picture = dice_roll_pictures[value]
+
+
     class Organization(store.object):
         def __init__(self, location = None, gold = None, mc = None, girls = None):
             self.location = location or 'start' 

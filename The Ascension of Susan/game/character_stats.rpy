@@ -6,38 +6,6 @@ init python:
     import random
     import math
 
-    class Dice(store.object):
-        def __init__(self, value: int):
-            self.roll = random.randint(1, value)
-            self.critical_mod = 1
-            self.critical = None
-            self.average = (value+1)/2
-
-            if self.roll == value: # Критический успех
-                self.critical = True
-                if value == 6:
-                    self.critical_mod = 1.25
-                elif value == 8:
-                    self.critical_mod = 1.5
-                elif value == 10:
-                    self.critical_mod = 2
-                elif value == 12:
-                    self.critical_mod = 2.25
-                elif value == 20:
-                    self.critical_mod = 3
-            if self.roll == 1: # Критический провал
-                self.critical = False
-                if value == 6:
-                    self.critical_mod = 0.7
-                elif value == 8:
-                    self.critical_mod = 0.4
-                elif value == 10:
-                    self.critical_mod = 0.25
-                elif value == 12:
-                    self.critical_mod = 0.2
-                elif value == 20:
-                    self.critical_mod = 0.1
-
     stat_ru_name = {
         "sex": "секс",
         "combat": "бой",
