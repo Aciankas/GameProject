@@ -410,6 +410,12 @@ screen prostitution_night_act(act):
 
         l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps+g_screens_x_gap
         l_girl_screen_ypos = 1080-g_prostitution_girl_screen_ysize-g_screens_y_gap
+    image Frame("gui/no_frame_low_transparent.png", 0, 0,
+        xpos = 0, 
+        ypos = l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5, 
+        xsize = 1920, 
+        ysize = 1080-(l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5)
+        )
     use prostitution_girl(girl, l_girl_screen_xpos, l_girl_screen_ypos)
 
     use skip_screen
