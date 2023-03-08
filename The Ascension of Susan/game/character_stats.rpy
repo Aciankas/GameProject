@@ -50,12 +50,6 @@ init python:
         "гейша": "geisha"
     }
 
-    colour = {
-        "green": "#70ED3B",
-        "red":"#FF4040",
-        "orange":"#FF9E00",
-        "neutral":"#FFFFFF"}
-
     personality_traits = [
         ('Дисциплина','Свобода'),
         ('Миролюбие','Кровожадность'),
@@ -1085,7 +1079,7 @@ screen personage_stats(girl_id=0):
                             use trait_block(trait)
 
     # Портрет
-    use framed_image(current_companion.profile_image, arg_xpos=20, arg_ypos=65, arg_xalign=0.5, arg_xmax=600, arg_ymax=875)
+    use framed_image(current_companion.profile_image, p_xpos=20, p_ypos=65, p_xalign=0.5, p_xmax=600, p_ymax=875)
 
 screen increment_stat(stat, companion):
     frame:

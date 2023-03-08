@@ -19,37 +19,51 @@ screen skip_screen:
         action Return()
 
 
-# Изображение в рамке
-screen framed_image(pic_path, arg_xalign=None, arg_yalign=None, arg_xpos=None, arg_ypos=None, arg_xmax=None, arg_ymax=None, arg_xsize=None, arg_ysize=None):
+# Экран кубика
+screen dice_screen(p_dice, p_xpos, p_ypos, p_size):
+    python:
+        l_font = g_num_font_bold
+        l_text_size = p_size//2-1
+        l_text_color = colour["basic_gold"]
     frame:
         style "frame_empty"
-        xalign arg_xalign
-        yalign arg_yalign
+        xpos p_xpos
+        ypos p_ypos
+        xsize p_size
+        ysize p_size*3//2
+        image Transform(p_dice.picture, xysize = (p_size, p_size))
+        text "{font=[l_font]}{color=[l_text_color]}{size=[l_text_size]}d[p_dice.max_value]{/size}{/color}{/font}" xpos p_size ypos 0
+        text "{font=[l_font]}{color=[p_dice.color]}{size=[l_text_size]}  [p_dice.roll]{/size}{/color}{/font}" xpos p_size ypos l_text_size+1
+
+# Изображение в рамке
+screen framed_image(pic_path, p_xalign=None, p_yalign=None, p_xpos=None, p_ypos=None, p_xmax=None, p_ymax=None, p_xsize=None, p_ysize=None, p_xpadding = 16, p_ypadding = 16):
+    frame:
+        style "frame_empty"
+        xalign p_xalign
+        yalign p_yalign
         python:
-            arg_xpadding = 16
-            arg_ypadding = 16
-            if arg_xmax is None and arg_xsize is None:
+            if p_xmax is None and p_xsize is None:
                 pic_xsize = 150
-            elif arg_xmax is not None:
-                arg_xsize = None
-                pic_xsize = arg_xmax-arg_xpadding
+            elif p_xmax is not None:
+                p_xsize = None
+                pic_xsize = p_xmax-p_xpadding*2
             else:
-                pic_xsize = arg_xsize-arg_xpadding
-            if arg_ymax is None and arg_ysize is None:
+                pic_xsize = p_xsize-p_xpadding*2
+            if p_ymax is None and p_ysize is None:
                 pic_ysize = 300
-            elif arg_ymax is not None:
-                arg_ysize = None
-                pic_ysize = arg_ymax-arg_ypadding
+            elif p_ymax is not None:
+                p_ysize = None
+                pic_ysize = p_ymax-p_ypadding*2
             else:
-                pic_ysize = arg_ysize-arg_ypadding
+                pic_ysize = p_ysize-p_ypadding*2
         frame:
-            xpos arg_xpos
-            ypos arg_ypos
-            xmaximum arg_xmax
-            ymaximum arg_ymax
-            xsize arg_xsize
-            ysize arg_ysize
-            padding (arg_xpadding, arg_ypadding)
+            xpos p_xpos
+            ypos p_ypos
+            xmaximum p_xmax
+            ymaximum p_ymax
+            xsize p_xsize
+            ysize p_ysize
+            padding (p_xpadding, p_ypadding)
             foreground Frame("gui/frame_corner_background.png", 68, 68, 68, 68, tile=True)
             background None
             image Transform(pic_path, fit='contain', xysize = (pic_xsize,pic_ysize))
@@ -66,8 +80,9 @@ screen infobox(info='default', orientation='down'):
 
 screen resources:
     python:
+        l_font = g_num_font_bold
         g_base_gold = math.floor(g_base.gold)
-        res_menu_text_size = 26
+        res_menu_text_size = 20
     frame:
         style "frame_thin_line"
         xpos -10
@@ -84,7 +99,7 @@ screen resources:
             idle Transform(g_time.button_picture(), xysize = (64,64))
             action Function(g_time.next)
         image Transform("gold_image", fit='contain', xysize = (30,30))
-        text "{size=[res_menu_text_size]}[g_base_gold]{/size}" ypos 0
+        text "{font=[l_font]}{size=[res_menu_text_size]} [g_base_gold] {/size}{/font}" ypos 3
 
 screen main_hub:
     python:

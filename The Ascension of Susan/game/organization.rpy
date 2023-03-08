@@ -6,7 +6,14 @@ init python:
     import random
     import math
 
-
+    g_num_font_bold = "fonts/Comfortaa-Bold.ttf"
+    colour = {
+        "green": "#70ED3B",
+        "red":"#FF4040",
+        "orange":"#FF9E00",
+        "neutral":"#FFFFFF",
+        "basic_gold":"#FFC965"}
+        
     class Dice(store.object):
         def __init__(self, value: int):
             critical_mod_success = {
@@ -30,16 +37,20 @@ init python:
                 10: "gui/dice/dice-d10.png",
                 12: "gui/dice/dice-d12.png",
                 20: "gui/dice/dice-d20.png"}
-            
+
+            self.max_value = value
             self.roll = random.randint(1, value)
             self.critical_mod = 1
             self.critical = None
+            self.color = colour["basic_gold"]
             self.average = (value+1)/2
             if self.roll == value: # Критический успех
                 self.critical = True
+                #self.color = colour["green"]
                 self.critical_mod = critical_mod_success[self.roll]
             if self.roll == 1: # Критический провал
                 self.critical = False
+                #self.color = colour["red"]
                 self.critical_mod = critical_mod_failure[value]
             self.picture = dice_roll_pictures[value]
 

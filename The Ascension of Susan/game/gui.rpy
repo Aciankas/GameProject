@@ -56,13 +56,13 @@ define gui.interface_text_color = u'#ffffff'
 ## Шрифты и их размеры #########################################################
 
 ## Шрифт, используемый внутриигровым текстом.
-define gui.text_font = "Caveat-VariableFont_wght.ttf"
+define gui.text_font = "fonts/Caveat-VariableFont_wght.ttf"
 
 ## Шрифт, используемый именами персонажей.
-define gui.name_text_font = "Caveat-VariableFont_wght.ttf"
+define gui.name_text_font = "fonts/Caveat-VariableFont_wght.ttf"
 
 ## Шрифт, используемый текстом вне игры.
-define gui.interface_text_font = "Caveat-VariableFont_wght.ttf"
+define gui.interface_text_font = "fonts/Caveat-VariableFont_wght.ttf"
 
 ## Размер нормального текста диалога.
 define gui.text_size = 33

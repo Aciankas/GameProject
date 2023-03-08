@@ -183,7 +183,7 @@ init python:
     g_prostitution_girl_screen_ysize = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize+3
     g_prostitution_girl_screen_left_right_gaps = int(g_prostitution_girl_screen_xsize*0.12)
 
-    g_prostitution_screen_text_font = "DejaVuSans.ttf"
+    g_prostitution_screen_text_font = g_num_font_bold #"DejaVuSans.ttf"
     g_skill_level_pic = "gui/bar/level_icon.png"
 
 
@@ -408,14 +408,23 @@ screen prostitution_night_act(act):
     python:
         girl = g_base.girls.list[act.girl_id]
 
-        l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps+g_screens_x_gap
-        l_girl_screen_ypos = 1080-g_prostitution_girl_screen_ysize-g_screens_y_gap
+        l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps + g_screens_x_gap
+        l_girl_screen_ypos = 1080 - g_prostitution_girl_screen_ysize - g_screens_y_gap
+    
+
     image Frame("gui/no_frame_low_transparent.png", 0, 0,
         xpos = 0, 
         ypos = l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5, 
         xsize = 1920, 
         ysize = 1080-(l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5)
         )
-    use prostitution_girl(girl, l_girl_screen_xpos, l_girl_screen_ypos)
+    frame:
+        style "frame_empty"
+        xpos l_girl_screen_xpos
+        ypos l_girl_screen_ypos
+        xsize 1920-l_girl_screen_xpos-g_screens_x_gap
+        ysize 1080 - l_girl_screen_ypos
+        use prostitution_girl(girl, 0, 0)
+        use dice_screen(p_dice = act.dice, p_xpos = g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2, p_ypos = 0, p_size = 80)
 
     use skip_screen
