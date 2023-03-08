@@ -407,11 +407,13 @@ screen prostitution_night:
 screen prostitution_night_act(act):
     python:
         girl = g_base.girls.list[act.girl_id]
+        client = g_base.cur_prostitution_night.clients.list[act.client_id]
 
         l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps + g_screens_x_gap
         l_girl_screen_ypos = 1080 - g_prostitution_girl_screen_ysize - g_screens_y_gap
-    
-
+        l_second_row_size = g_prostitution_client_screen_ysize
+        l_second_yrow = int(g_prostitution_girl_screen_ysize-l_second_row_size)
+        
     image Frame("gui/no_frame_low_transparent.png", 0, 0,
         xpos = 0, 
         ypos = l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5, 
@@ -425,6 +427,19 @@ screen prostitution_night_act(act):
         xsize 1920-l_girl_screen_xpos-g_screens_x_gap
         ysize 1080 - l_girl_screen_ypos
         use prostitution_girl(girl, 0, 0)
-        use dice_screen(p_dice = act.dice, p_xpos = g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2, p_ypos = 0, p_size = 80)
+        frame:
+            style "frame_empty"
+            xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
+            ypos 0
+            ysize g_prostitution_client_screen_ysize
+            use prostitution_client(client, 0, 0)
+            
+        frame:
+            style "frame_empty"
+            xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
+            ypos l_second_yrow
+            ysize l_second_row_size
+            use dice_screen(p_dice = act.dice, p_xpos = 0, p_ypos = 0, p_size = l_second_row_size)
+
 
     use skip_screen
