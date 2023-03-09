@@ -452,6 +452,7 @@ screen prostitution_night_act(act):
                 text "{font=[l_font]}Бонус акт: [l_bonus_act]{/font}"
                 text "{font=[l_font]}Репутация: [act.reputation]{/font}"
                 text "{font=[l_font]}Заработок: [act.profit] (Ожидаемый: [act.expected_profit]){/font}"
+                text "прокачка стат"
 
 
     use skip_screen
