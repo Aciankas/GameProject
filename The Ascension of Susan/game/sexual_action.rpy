@@ -132,7 +132,7 @@ init python:
             girl = base.girls.list[act.girl_id]
             client = self.clients.list[act.client_id]
             girl.personality.event('sex', 'peace', 'command' if girl.action_command else 'freedom', 'public' if girl.action_public else 'private')
-            girl.acted(client.prefered_act)
+            act.stat_changes = girl.acted(client.prefered_act)
             client.served = True
             # Для анимирования Ночи:
             client.girl_id = act.girl_id
@@ -437,8 +437,8 @@ screen prostitution_night_act(act):
             use prostitution_client(client, 0, 0)
             hbox:
                 xpos g_prostitution_client_screen_xsize
-                if act.failed: 
-                    text "{font=[l_font]}Клиент недоволен!{/font}"
+                for chg in act.stat_changes:
+                    text "{font=[l_font]}[chg]{/font}"
         frame:
             style "frame_empty"
             xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
@@ -449,10 +449,10 @@ screen prostitution_night_act(act):
                 xpos g_prostitution_client_screen_xsize
                 python:
                     l_bonus_act = stats_text(act.bonus_act_mod, colored_pre_text = '')
+                    l_reputation = stats_text(act.reputation)
                 text "{font=[l_font]}Бонус акт: [l_bonus_act]{/font}"
-                text "{font=[l_font]}Репутация: [act.reputation]{/font}"
-                text "{font=[l_font]}Заработок: [act.profit] (Ожидаемый: [act.expected_profit]){/font}"
-                text "прокачка стат"
+                text "{font=[l_font]}{color=" + colour['reputation'] + "}Репутация: {/color}[l_reputation]{/font}"
+                text "{font=[l_font]}{color=" + colour['basic_gold'] + "}Заработок: [act.profit]{/color} {color=" + colour['grey'] + "}(Ожидаемый: {/color}{color=" + colour['basic_gold'] + "}[act.expected_profit]{/color}{color=" + colour['grey'] + "}){/color}{/font}"
 
 
     use skip_screen

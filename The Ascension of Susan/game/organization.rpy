@@ -13,7 +13,9 @@ init python:
         "green": "#70ED3B",
         "red":"#FF4040",
         "orange":"#FF9E00",
-        "basic_gold":"#FFC965"}
+        "basic_gold":"#FFC965",
+        "reputation": "#58aaf7",
+        "grey": "#919191"}
     
     def stats_text(stat, pos_value = 0, neg_value = 0, base_color = "white", pos_color = "green", neg_color = "red", colored_pre_text = ""):
         base_color = colour[base_color]

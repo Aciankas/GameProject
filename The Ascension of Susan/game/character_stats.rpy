@@ -774,10 +774,84 @@ init python:
             # return: количество энергии, затрачиваемое на этот тип действия
             return 25
         
+        def current_stats(self):
+            return {
+                "sex_exp": int(self.stat["sex"].exp),
+                "combat_exp": int(self.stat["combat"].exp),
+                "job_exp": int(self.stat["job"].exp),
+                "charm_exp": int(self.stat["charm"].exp),
+                "grace_exp": int(self.stat["grace"].exp),
+                "strength_exp": int(self.stat["strength"].exp),
+                "erudition_exp": int(self.stat["erudition"].exp),
+                "sex_value": int(self.stat["sex"].value),
+                "combat_value": int(self.stat["combat"].value),
+                "job_value": int(self.stat["job"].value),
+                "charm_value": int(self.stat["charm"].value),
+                "grace_value": int(self.stat["grace"].value),
+                "strength_value": int(self.stat["strength"].value),
+                "erudition_value": int(self.stat["erudition"].value),
+                "service_value": int(self.stat["service"].value),
+                "deception_value": int(self.stat["deception"].value),
+                "waitress_value": int(self.stat["waitress"].value),
+                "classic_value": int(self.stat["classic"].value),
+                "finesse_value": int(self.stat["finesse"].value),
+                "dancer_value": int(self.stat["dancer"].value),
+                "anal_value": int(self.stat["anal"].value),
+                "power_value": int(self.stat["power"].value),
+                "masseuse_value": int(self.stat["masseuse"].value),
+                "fetish_value": int(self.stat["fetish"].value),
+                "magic_value": int(self.stat["magic"].value),
+                "geisha_value": int(self.stat["geisha"].value),
+                "energy": int(self.energy),
+                "health": int(self.health),
+                "max_health": int(self.max_health)
+            }
+        
+        def check_stats_diff(self, p_prev_stats):
+            l_decoration_dict = {
+                "sex_exp": ("Секс: ", " опыта"),
+                "combat_exp": ("Бой: ", " опыта"),
+                "job_exp": ("Услуги: ", " опыта"),
+                "charm_exp": ("Очарование: ", " опыта"),
+                "grace_exp": ("Грация: ", " опыта"),
+                "strength_exp": ("Сила: ", " опыта"),
+                "erudition_exp": ("Эрудиция: ", " опыта"),
+                "sex_value": ("Секс: ", ""),
+                "combat_value": ("Бой: ", ""),
+                "job_value": ("Услуги: ", ""),
+                "charm_value": ("Очарование: ", ""),
+                "grace_value": ("Грация: ", ""),
+                "strength_value": ("Сила: ", ""),
+                "erudition_value": ("Эрудиция: ", ""),
+                "service_value": ("Ласки: ", ""),
+                "deception_value": ("Уловки: ", ""),
+                "waitress_value": ("Официантка: ", ""),
+                "classic_value": ("Классика: ", ""),
+                "finesse_value": ("Искусность: ", ""),
+                "dancer_value": ("Танцовщица: ", ""),
+                "anal_value": ("Анал: ", ""),
+                "power_value": ("Мощь: ", ""),
+                "masseuse_value": ("Массажистка: ", ""),
+                "fetish_value": ("Фетиш: ", ""),
+                "magic_value": ("Магия: ", ""),
+                "geisha_value": ("Гейша: ", ""),
+                "energy": ("Энергия: ", ""),
+                "health": ("Здоровье: ", ""),
+                "max_health": ("Макс. Здоровье: ", "")
+            }
+            l_cur_stats = self.current_stats()
+            l_difference = list()
+            for stat, value in l_cur_stats.items():
+                if p_prev_stats[stat] != l_cur_stats[stat]:
+                    l_difference.append(l_decoration_dict[stat][0] + stats_text(l_cur_stats[stat] - p_prev_stats[stat]) + l_decoration_dict[stat][1])
+            return l_difference
+
         def acted(self, action: str = 'default', exp_value: float = 1):
             # action: тип действия персонажа, для которого необходимо выполнить изменения, связанные с персонажем
+            pre_stats = self.current_stats()
             self.energy -= self.action_energy(action)
             self.change_exp(action, exp_value)
+            return self.check_stats_diff(pre_stats)
         
         # Блок черт персонажа
         def add_trait(self, trait_name):
