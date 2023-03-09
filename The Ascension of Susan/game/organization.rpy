@@ -8,12 +8,26 @@ init python:
 
     g_num_font_bold = "fonts/Comfortaa-Bold.ttf"
     colour = {
+        "white": "#FFFFFF",
+        "neutral":"#FFFFFF",
         "green": "#70ED3B",
         "red":"#FF4040",
         "orange":"#FF9E00",
-        "neutral":"#FFFFFF",
         "basic_gold":"#FFC965"}
-        
+    
+    def stats_text(stat, pos_value = 0, neg_value = 0, base_color = "white", pos_color = "green", neg_color = "red", colored_pre_text = ""):
+        base_color = colour[base_color]
+        pos_color = colour[pos_color]
+        neg_color = colour[neg_color]
+        result_text = "{color="
+        if stat < neg_value:   result_text += neg_color
+        elif stat > pos_value: result_text += pos_color
+        else:                  result_text += base_color
+        result_text += "}"+str(colored_pre_text)
+        if stat > 0:           result_text += "+"
+        result_text += str(stat)+"{/color}"
+        return result_text
+
     class Dice(store.object):
         def __init__(self, value: int):
             critical_mod_success = {

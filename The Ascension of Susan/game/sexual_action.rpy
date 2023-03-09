@@ -414,6 +414,8 @@ screen prostitution_night_act(act):
         l_second_row_size = g_prostitution_client_screen_ysize
         l_second_yrow = int(g_prostitution_girl_screen_ysize-l_second_row_size)
         
+        l_font = g_num_font_bold
+        
     image Frame("gui/no_frame_low_transparent.png", 0, 0,
         xpos = 0, 
         ypos = l_girl_screen_ypos-g_prostitution_girl_screen_ysize//5, 
@@ -433,13 +435,23 @@ screen prostitution_night_act(act):
             ypos 0
             ysize g_prostitution_client_screen_ysize
             use prostitution_client(client, 0, 0)
-            
+            hbox:
+                xpos g_prostitution_client_screen_xsize
+                if act.failed: 
+                    text "{font=[l_font]}Клиент недоволен!{/font}"
         frame:
             style "frame_empty"
             xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
             ypos l_second_yrow
             ysize l_second_row_size
             use dice_screen(p_dice = act.dice, p_xpos = 0, p_ypos = 0, p_size = l_second_row_size)
+            hbox:
+                xpos g_prostitution_client_screen_xsize
+                python:
+                    l_bonus_act = stats_text(act.bonus_act_mod, colored_pre_text = '')
+                text "{font=[l_font]}Бонус акт: [l_bonus_act]{/font}"
+                text "{font=[l_font]}Репутация: [act.reputation]{/font}"
+                text "{font=[l_font]}Заработок: [act.profit] (Ожидаемый: [act.expected_profit]){/font}"
 
 
     use skip_screen
