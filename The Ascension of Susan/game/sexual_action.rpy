@@ -69,7 +69,8 @@ init python:
             else:                                                                                                          self.bonus_act_mod = 0
             self._roll_base = base.prostitution_difficulty_modifier + girl.stat[client.prefered_act].act_mastery() - client.level
             self._roll_bonuses = self.bonus_act_mod + (girl.stat[client.prefered_act].modifier + ((girl.stat[client.prefered_act].value - client.level*20)/2 + (girl.stat[girl.stat[client.prefered_act].parent_2_name].value - client.level*20)/2)/20)
-            self.profit = round((min(self._roll_base + self.dice.roll, 10) + self._roll_bonuses)/10 * client.money * self.dice.critical_mod)
+            self._roll_effect = min(self._roll_base + self.dice.roll, 10)
+            self.profit = round((self._roll_effect + self._roll_bonuses)/10 * client.money * self.dice.critical_mod)
             if self.profit < client.money/5:
                 self.failed = True
                 self.profit = client.money/5
@@ -411,10 +412,13 @@ screen prostitution_night_act(act):
 
         l_girl_screen_xpos = g_prostitution_girl_screen_left_right_gaps + g_screens_x_gap
         l_girl_screen_ypos = 1080 - g_prostitution_girl_screen_ysize - g_screens_y_gap
+        l_after_girl_xpos = g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
         l_second_row_size = g_prostitution_client_screen_ysize
         l_second_yrow = int(g_prostitution_girl_screen_ysize-l_second_row_size)
         
         l_font = g_num_font_bold
+        l_font_stat_size = int(g_prostitution_girl_screen_ysize/5)
+        l_font_stat_min_size = int(l_font_stat_size/2)
         
     image Frame("gui/no_frame_low_transparent.png", 0, 0,
         xpos = 0, 
@@ -429,30 +433,28 @@ screen prostitution_night_act(act):
         xsize 1920-l_girl_screen_xpos-g_screens_x_gap
         ysize 1080 - l_girl_screen_ypos
         use prostitution_girl(girl, 0, 0)
-        frame:
-            style "frame_empty"
-            xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
-            ypos 0
-            ysize g_prostitution_client_screen_ysize
-            use prostitution_client(client, 0, 0)
-            hbox:
-                xpos g_prostitution_client_screen_xsize
-                for chg in act.stat_changes:
-                    text "{font=[l_font]}[chg]{/font}"
-        frame:
-            style "frame_empty"
-            xpos g_prostitution_girl_screen_xsize + g_prostitution_girl_screen_left_right_gaps*2
-            ypos l_second_yrow
-            ysize l_second_row_size
-            use dice_screen(p_dice = act.dice, p_xpos = 0, p_ypos = 0, p_size = l_second_row_size)
-            hbox:
-                xpos g_prostitution_client_screen_xsize
+        use prostitution_client(client, l_after_girl_xpos, 0)
+        use dice_screen(p_dice = act.dice, p_xpos = l_after_girl_xpos, p_ypos = l_second_yrow, p_size = l_second_row_size)
+        hbox:
+            xpos l_after_girl_xpos + g_prostitution_client_screen_xsize + int(g_prostitution_client_screen_xsize/5)
+            ysize g_prostitution_girl_screen_ysize
+            vbox:
                 python:
                     l_bonus_act = stats_text(act.bonus_act_mod, colored_pre_text = '')
+                    l_roll_effect = stats_text(act._roll_effect, neg_value = g_base.prostitution_difficulty_modifier+1, pos_value = 9, colored_pre_text = '')
                     l_reputation = stats_text(act.reputation)
-                text "{font=[l_font]}Бонус акт: [l_bonus_act]{/font}"
-                text "{font=[l_font]}{color=" + colour['reputation'] + "}Репутация: {/color}[l_reputation]{/font}"
-                text "{font=[l_font]}{color=" + colour['basic_gold'] + "}Заработок: [act.profit]{/color} {color=" + colour['grey'] + "}(Ожидаемый: {/color}{color=" + colour['basic_gold'] + "}[act.expected_profit]{/color}{color=" + colour['grey'] + "}){/color}{/font}"
+                    l_profit = int(act.profit)
+                    l_expected_profit = act.expected_profit
+                text "{font=[l_font]}{size=[l_font_stat_size]}Бонус кубика: [l_roll_effect]{/size}{/font}"
+                text "{font=[l_font]}{size=[l_font_stat_size]}Бонус акт: [l_bonus_act]{/size}{/font}"
+                text "{font=[l_font]}{size=[l_font_stat_size]}{color=" + colour['reputation'] + "}Репутация: {/color}[l_reputation]{/size}{/font}"
+                text "{font=[l_font]}{size=[l_font_stat_size]}{color=" + colour['basic_gold'] + "}Заработок: [l_profit]{/color}{/size}{/font}"
+                text "{font=[l_font]}{size=[l_font_stat_min_size]}{color=" + colour['grey'] + "}(Ожидаемый: {/color}{color=" + colour['basic_gold'] + "}[l_expected_profit]{/color}{color=" + colour['grey'] + "}){/color}{/size}{/font}"
+            vbox:
+                xsize int(g_prostitution_client_screen_xsize/5)
+            vbox:
+                for chg in act.stat_changes:
+                    text "{font=[l_font]}{size=[l_font_stat_size]}[chg]{/size}{/font}"
 
 
     use skip_screen
