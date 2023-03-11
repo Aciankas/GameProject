@@ -22,7 +22,7 @@ screen skip_screen:
 # Экран кубика
 screen dice_screen(p_dice, p_xpos, p_ypos, p_size):
     python:
-        l_font = g_num_font_bold
+        l_font = g_font["num bold"]
         l_text_size = p_size//2-1
         l_text_color = colour["basic_gold"]
     frame:
@@ -80,7 +80,7 @@ screen infobox(info='default', orientation='down'):
 
 screen resources:
     python:
-        l_font = g_num_font_bold
+        l_font = g_font["num bold"]
         g_base_gold = math.floor(g_base.gold)
         res_menu_text_size = 20
     frame:

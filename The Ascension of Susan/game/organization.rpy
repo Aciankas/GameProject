@@ -6,7 +6,6 @@ init python:
     import random
     import math
 
-    g_num_font_bold = "fonts/Comfortaa-Bold.ttf"
     colour = {
         "white": "#FFFFFF",
         "neutral":"#FFFFFF",

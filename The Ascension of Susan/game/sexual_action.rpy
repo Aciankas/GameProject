@@ -184,7 +184,8 @@ init python:
     g_prostitution_girl_screen_ysize = g_prostitution_girl_screen_pic_size+g_prostitution_girl_screen_sec_statsize+3
     g_prostitution_girl_screen_left_right_gaps = int(g_prostitution_girl_screen_xsize*0.12)
 
-    g_prostitution_screen_text_font = g_num_font_bold #"DejaVuSans.ttf"
+    g_prostitution_screen_text_font = g_font["num bold"] #"DejaVuSans.ttf"
+    g_girl_name_font = g_font["main"]
     g_skill_level_pic = "gui/bar/level_icon.png"
 
 
@@ -234,7 +235,7 @@ screen prostitution_girl(girl, x_pos = 0, y_pos = 0):
         image Transform("gui/lap_girl_left.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = -3-int(g_prostitution_girl_screen_ysize*0.3), ypos = -3)
         image Transform("gui/lap_girl_right.png", fit='contain', xysize = (g_prostitution_girl_screen_ysize,  g_prostitution_girl_screen_ysize), xpos = g_prostitution_girl_screen_xsize+3-int(g_prostitution_girl_screen_ysize*0.1), ypos = -3)
         image Transform(girl_pic, fit='contain', xysize = (g_prostitution_girl_screen_pic_size-1,g_prostitution_girl_screen_pic_size-1))
-        text '{size=[g_prostitution_girl_screen_text_size]}[girl.name]{/size}' xpos g_prostitution_girl_screen_pic_size+2
+        text '{font=[g_girl_name_font]}{size=[g_prostitution_girl_screen_text_size]}[girl.name]{/size}{/font}' xpos g_prostitution_girl_screen_pic_size+2
         for idx, stat in enumerate(main_stat_pics):
             image Transform(stat[0], fit='contain', xysize = (g_prostitution_girl_screen_main_statsize-2,g_prostitution_girl_screen_main_statsize-2), 
                 xpos = g_prostitution_girl_screen_pic_size+idx*g_prostitution_girl_screen_main_statsize, 
@@ -416,9 +417,9 @@ screen prostitution_night_act(act):
         l_second_row_size = g_prostitution_client_screen_ysize
         l_second_yrow = int(g_prostitution_girl_screen_ysize-l_second_row_size)
         
-        l_font = g_num_font_bold
+        l_font = g_font["num bold"]
         l_font_stat_size = int(g_prostitution_girl_screen_ysize/5)
-        l_font_stat_min_size = int(l_font_stat_size/2)
+        l_font_stat_min_size = int(l_font_stat_size*2/3)
         
     image Frame("gui/no_frame_low_transparent.png", 0, 0,
         xpos = 0, 
